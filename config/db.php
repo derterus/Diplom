@@ -5,7 +5,8 @@ return [
     'dsn' => 'mysql:host=127.0.0.1;dbname=watchshop',
     'username' => 'root',
     'password' => 'Q1qqqqqq',
-    'charset' => 'utf8',
+    'charset' => 'utf8mb4',
+    
 
     // Schema cache options (for production environment)
     //'enableSchemaCache' => true,

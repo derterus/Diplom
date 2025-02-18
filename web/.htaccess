@@ -1,4 +1,14 @@
-RewriteEngine on
+RewriteEngine On
+
+# Проверка, что запрос не на существующий каталог
 RewriteCond %{REQUEST_FILENAME} !-d
+
+# Проверка, что запрос использует PUT или PATCH
+RewriteCond %{REQUEST_METHOD} ^(PUT|PATCH)
+RewriteRule .* - [E=HTTP_METHOD:%{REQUEST_METHOD}]
+
+# Проверка, что запрос не на существующий файл
 RewriteCond %{REQUEST_FILENAME} !-f
+
+# Перенаправление всех запросов на index.php
 RewriteRule . index.php [L]
