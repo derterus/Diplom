@@ -6,7 +6,8 @@ use Yii;
 use yii\rest\ActiveController;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\AccessControl;
-use app\models\Orders; // Исправлено
+use app\models\Orders; 
+use app\models\OrderItems; 
 use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
 use yii\web\ServerErrorHttpException;
@@ -15,34 +16,38 @@ use yii\web\ForbiddenHttpException;
 
 class OrdersController extends ActiveController
 {
-    public $modelClass = 'app\models\Orders'; // Исправлено
+    public $modelClass = 'app\models\Orders'; 
 
     public function behaviors()
     {
         $behaviors = parent::behaviors();
 
-        // Аутентификация по Bearer token
+        unset($behaviors['verbs']);
+
+        // Authentication via Bearer Token
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::class,
         ];
 
-        // Контроль доступа
+        // Access control
         $behaviors['access'] = [
             'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,
-                    'actions' => ['index', 'view', 'create'], // Allow create for authenticated users
-                    'roles' => ['@'], // Авторизованные пользователи
+                    'actions' => ['index', 'view'],
+                    'roles' => ['@'], // Authorized users
                 ],
                 [
                     'allow' => true,
-                    'actions' => ['update', 'delete', 'change-status'], // Only admin can update and delete
-                    'roles' => ['admin'], // Только админы
+                    'actions' => ['create', 'update', 'delete'],
+                    'matchCallback' => function ($rule, $action) {
+                        return Yii::$app->user->identity->getRole() === 'admin'; // Role check
+                    },
                 ],
             ],
-             'denyCallback' => function ($rule, $action) {
-                throw new \yii\web\ForbiddenHttpException('У вас недостаточно прав для выполнения этого действия.');
+            'denyCallback' => function () {
+                throw new ForbiddenHttpException('You do not have sufficient rights to perform this action.');
             },
         ];
 
@@ -93,24 +98,51 @@ class OrdersController extends ActiveController
     }
 
     public function actionCreate()
-    {
-        $model = new Orders(); // Исправлено
-        $model->load(Yii::$app->getRequest()->getBodyParams(), '');
-        $model->user_id = Yii::$app->user->id; // Set user_id for the current user
-        $model->created_at = date('Y-m-d H:i:s'); // Set created_at timestamp
+{
+    $request = Yii::$app->request;
+    $orderData = $request->getBodyParams();
 
-        if ($model->save()) {
-            $response = Yii::$app->getResponse();
-            $response->setStatusCode(201);
-            $id = implode(',', array_values($model->getPrimaryKey(true)));
-            $response->getHeaders()->set('Location', \yii\helpers\Url::toRoute(['view', 'id' => $id], true));
-            return $model;
-        } elseif (!$model->hasErrors()) {
-            throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
-        } else {
-            throw new UnprocessableEntityHttpException(json_encode($model->getErrors()));
+    // Валидация данных заказа (можно использовать сценарии валидации)
+    $order = new Orders();
+    $order->load($orderData, '');
+    $order->user_id = Yii::$app->user->id;
+
+    // Получаем элементы заказа из запроса
+    $orderItemsData = $orderData['orderItems'] ?? []; // Предполагаем, что элементы заказа приходят в массиве 'orderItems'
+
+    // Начинаем транзакцию
+    $transaction = Yii::$app->db->beginTransaction();
+    try {
+        if (!$order->save()) {
+            throw new UnprocessableEntityHttpException(json_encode($order->getErrors()));
         }
+
+        // Создаем элементы заказа
+        foreach ($orderItemsData as $itemData) {
+            $orderItem = new OrderItems();
+            $itemData['order_id'] = $order->id; // Привязываем к созданному заказу
+            $orderItem->load($itemData, '');
+
+            if (!$orderItem->save()) {
+                throw new UnprocessableEntityHttpException(json_encode($orderItem->getErrors()));
+            }
+        }
+
+        // Подтверждаем транзакцию
+        $transaction->commit();
+
+        $response = Yii::$app->getResponse();
+        $response->setStatusCode(201);
+        $id = implode(',', array_values($order->getPrimaryKey(true)));
+        $response->getHeaders()->set('Location', \yii\helpers\Url::toRoute(['view', 'id' => $id], true));
+        return $order;
+
+    } catch (\Exception $e) {
+        $transaction->rollBack();
+        Yii::error('Failed to create order: ' . $e->getMessage()); // Логируем ошибку
+        throw $e; // Пробрасываем исключение дальше
     }
+}
 
     public function actionUpdate($id)
     {

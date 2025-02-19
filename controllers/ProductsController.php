@@ -247,103 +247,13 @@ class ProductsController extends Controller
         throw new NotFoundHttpException("Product not found.");
     }
 
-    // Загрузка данных из POST запроса
-    if ($product->load(Yii::$app->request->post(), '')) {
-        Yii::info("Данные для обновления модели Products: " . json_encode($product->attributes), 'test-product');
-
-        if ($product->save()) {
-            Yii::info("Продукт с ID $id успешно сохранен.", 'test-product');
-        } else {
-            Yii::warning("Не удалось сохранить продукт с ID $id. Ошибки: " . json_encode($product->errors), 'test-product');
-            return $this->asJson(['errors' => $product->errors]); // Возвращаем ошибки, если они есть
-        }
-
-        // Получаем данные для обновления изображений
-        $imagesData = Yii::$app->request->post('images', []); // Загружаем данные изображений (если они есть)
-        $isMainData = Yii::$app->request->post('is_main', []); // Данные для is_main
-        $sortOrderData = Yii::$app->request->post('sort_order', []); // Данные для sort_order
-
-        // Логируем полученные данные
-        Yii::info("Загружены данные для обновления продукта с ID $id: " . json_encode([
-            'images' => $imagesData,
-            'is_main' => $isMainData,
-            'sort_order' => $sortOrderData,
-        ]), 'test-product');
-
-        // Если изображения были переданы, обрабатываем их
-        if (!empty($_FILES['images']['name'])) {
-            foreach ($_FILES['images']['name'] as $key => $fileName) {
-                // Получаем загруженный файл
-                $uploadedFile = UploadedFile::getInstanceByName("images[$key]");
-
-                if ($uploadedFile && $this->validateImage($uploadedFile)) {
-                    // Получаем URL для нового изображения
-                    $imageUrl = $this->uploadFile($uploadedFile);
-
-                    // Проверяем, существует ли изображение с таким ID
-                    $image = ProductImages::findOne($key);
-                    if ($image) {
-                        // Удаляем старое изображение перед обновлением
-                        $this->deleteImageFile($image->url);
-
-                        // Обновляем существующее изображение
-                        $image->url = $imageUrl;
-                        $image->is_main = isset($isMainData[$key]) ? $isMainData[$key] : $image->is_main;
-                        $image->sort_order = isset($sortOrderData[$key]) ? $sortOrderData[$key] : $image->sort_order;
-                        $image->save();
-                        Yii::info("Изображение с ID $key обновлено.", 'test-product');
-                    } else {
-                        // Если изображение не найдено, создаем новое
-                        $image = new ProductImages();
-                        $image->product_id = $product->id;
-                        $image->url = $imageUrl;
-                        $image->is_main = isset($isMainData[$key]) ? $isMainData[$key] : 0;
-                        $image->sort_order = isset($sortOrderData[$key]) ? $sortOrderData[$key] : 0;
-                        $image->save();
-                        Yii::info("Изображение с ID $key создано.", 'test-product');
-                    }
-                } else {
-                    Yii::warning("Не удалось загрузить изображение с ID $key.", 'test-product');
-                }
-            }
-        } else {
-            // Если изображения не передаются, обновляем параметры is_main и sort_order для существующих изображений
-            foreach ($product->productImages as $image) {
-                // Обновляем is_main и sort_order только если данные переданы
-                if (isset($isMainData[$image->id])) {
-                    $image->is_main = $isMainData[$image->id];
-                }
-                if (isset($sortOrderData[$image->id])) {
-                    $image->sort_order = $sortOrderData[$image->id];
-                }
-                $image->save();
-                Yii::info("Изображение с ID {$image->id} обновлено: is_main={$image->is_main}, sort_order={$image->sort_order}", 'test-product');
-            }
-        }
-
-        // Обработка характеристик
-        $characteristicsData = Yii::$app->request->post('characteristics', []);
-        Yii::info("Получены характеристики для обновления: " . json_encode($characteristicsData), 'test-product');
-
-        foreach ($characteristicsData as $charId => $charData) {
-            $char = ProductCharacteristics::findOne($charId);
-            if ($char) {
-                $char->value = $charData['value'];
-                $char->save();
-                Yii::info("Характеристика с ID $charId обновлена.", 'test-product');
-            } else {
-                Yii::warning("Не найдена характеристика с ID $charId для обновления.", 'test-product');
-            }
-        }
-
+    if ($product->load(Yii::$app->request->post(), '') && $product->save()) {
         Yii::info("Продукт с ID $id успешно обновлен.", 'test-product');
         return $product;
     }
 
     throw new ServerErrorHttpException('Не удалось обновить продукт.');
 }
-
- 
  /**
   * Метод для удаления старого изображения.
   *

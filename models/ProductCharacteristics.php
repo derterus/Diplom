@@ -33,9 +33,21 @@ class ProductCharacteristics extends \yii\db\ActiveRecord
         return [
             [['product_id', 'characteristic_id'], 'required'],
             [['product_id', 'characteristic_id'], 'integer'],
-            [['value'], 'string', 'max' => 255],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Products::class, 'targetAttribute' => ['product_id' => 'id']],
-            [['characteristic_id'], 'exist', 'skipOnError' => true, 'targetClass' => Characteristics::class, 'targetAttribute' => ['characteristic_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => false, 'targetClass' => Products::class, 'targetAttribute' => ['product_id' => 'id']],
+            [['value'], 'string'],
+
+            // Проверка диапазона characteristic_id
+            ['characteristic_id', 'exist',
+                'targetClass' => Characteristics::class, // Замени на имя твоей модели Characteristics
+                'targetAttribute' => 'id',
+                'message' => 'Characteristic ID does not exist.'
+            ],
+
+            // Проверка уникальности characteristic_id для одного product_id
+            [['product_id', 'characteristic_id'], 'unique',
+                'targetAttribute' => ['product_id', 'characteristic_id'],
+                'message' => 'This characteristic is already assigned to this product.'
+            ],
         ];
     }
 

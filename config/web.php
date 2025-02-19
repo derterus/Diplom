@@ -68,7 +68,7 @@ $config = [
         [
             'class' => 'yii\log\FileTarget',
             'levels' => ['error', 'warning', 'info', 'trace'],
-            'categories' => ['file-upload'], // Логируем все действия с загрузкой файлов
+            'categories' => ['product-images'], // Логируем все действия с загрузкой файлов
             'logFile' => '@runtime/logs/file-upload.log', // Куда сохранять логи
         ],
         [
@@ -104,16 +104,20 @@ $config = [
             'showScriptName' => false,
         'rules' => [
             
-        'POST api/categories/<id:\d+>' => 'categories/update',
-        'POST api/characteristics/<id:\d+>'  => 'characteristics/update',
-        'POST api/manufacturers/<id:\d+>'  => 'manufacturers/update',
-        'POST api/products/<id:\d+>'  => 'products/update',
-        ['class' => 'yii\rest\UrlRule', 'controller' => 'characteristics', 'prefix' => 'api'],
-        ['class' => 'yii\rest\UrlRule', 'controller' => 'categories', 'prefix' => 'api'],
-        ['class' => 'yii\rest\UrlRule', 'controller' => 'manufacturers', 'prefix' => 'api'],
-        ['class' => 'yii\rest\UrlRule', 'controller' => 'products','prefix' => 'api'],
-        ['class' => 'yii\rest\UrlRule', 'controller' => 'users','prefix' => 'api'],
-        // Registration route (не используем UrlRule, так как это не ActiveController)
+                'POST api/categories/<id:\d+>' => 'categories/update',
+                'POST api/characteristics/<id:\d+>'  => 'characteristics/update',
+                'POST api/manufacturers/<id:\d+>'  => 'manufacturers/update',
+                'POST api/products/<id:\d+>'  => 'products/update',
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'characteristics', 'prefix' => 'api'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'categories', 'prefix' => 'api'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'manufacturers', 'prefix' => 'api'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'products', 'prefix' => 'api'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'product-images', 'prefix' => 'api'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'product-characteristics', 'prefix' => 'api'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'users', 'prefix' => 'api'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'orders', 'prefix' => 'api'],
+        
+
         'POST registration/register' => 'registration/register',
         'POST auth/login' => 'auth/login',
 
