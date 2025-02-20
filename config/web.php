@@ -95,6 +95,12 @@ $config = [
             'categories' => ['test-product'], // Логируем данные запросов
             'logFile' => '@runtime/logs/test-product.log', // Куда сохранять логи
         ],
+        [
+            'class' => 'yii\log\FileTarget',
+            'levels' => ['error', 'warning', 'info', 'trace'],
+            'categories' => ['orders'], // Логируем данные запросов
+            'logFile' => '@runtime/logs/orders.log', // Куда сохранять логи
+        ],
         ],
     ],
         'db' => $db,
@@ -108,6 +114,7 @@ $config = [
                 'POST api/characteristics/<id:\d+>'  => 'characteristics/update',
                 'POST api/manufacturers/<id:\d+>'  => 'manufacturers/update',
                 'POST api/products/<id:\d+>'  => 'products/update',
+                'POST api/orders/<id:\d+>/cancel' => 'orders/cancel',
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'characteristics', 'prefix' => 'api'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'categories', 'prefix' => 'api'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'manufacturers', 'prefix' => 'api'],

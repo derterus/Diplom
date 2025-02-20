@@ -8,6 +8,7 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\AccessControl;
 use app\models\Orders; 
 use app\models\OrderItems; 
+use app\models\Products;
 use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
 use yii\web\ServerErrorHttpException;
@@ -40,7 +41,7 @@ class OrdersController extends ActiveController
                 ],
                 [
                     'allow' => true,
-                    'actions' => ['create', 'update', 'delete'],
+                    'actions' => ['create', 'update', 'delete','cancel'],
                     'matchCallback' => function ($rule, $action) {
                         return Yii::$app->user->identity->getRole() === 'admin'; // Role check
                     },
@@ -98,76 +99,106 @@ class OrdersController extends ActiveController
     }
 
     public function actionCreate()
+    {
+        $request = Yii::$app->request;
+
+        // Получаем ID пользователя из токена
+        $user_id = Yii::$app->user->id;
+
+        // Данные заказа
+        $order = new Orders();
+        $order->user_id = $user_id;
+        $order->shipping_address = $request->post('shipping_address');
+        $order->payment_method = $request->post('payment_method');
+        $order->shipping_cost = $request->post('shipping_cost');
+        $order->total_amount = 0; // Рассчитаем позже
+
+        // Устанавливаем статус заказа
+        $order->status = 'pending'; // Или любой другой статус по умолчанию
+
+        // Генерируем номер отслеживания
+        $order->tracking_number = $this->generateTrackingNumber();
+
+        if ($order->save()) {
+            $totalAmount = 0;
+
+            // Получаем orderItems
+            $orderItems = $request->post('orderItems', []);
+
+            foreach ($orderItems as $item) {
+                $orderItem = new OrderItems();
+                $orderItem->order_id = $order->id;
+                $orderItem->product_id = $item['product_id'];
+                $orderItem->quantity = $item['quantity'];
+                $orderItem->discount = isset($item['discount']) ? $item['discount'] : 0;
+
+                // Получаем цену товара
+                $product = Products::findOne($orderItem->product_id);
+                if ($product) {
+                    $orderItem->price = $product->price; // Set price from product table
+                    $price = $product->price * $orderItem->quantity - $orderItem->discount;
+                    $totalAmount += $price;
+
+                    $orderItem->item_total = $price; // Save total
+                    $orderItem->save();
+                }
+                
+            }
+
+            // Обновляем общую сумму заказа
+            $order->total_amount = $totalAmount + $order->shipping_cost;
+            $order->save();
+
+            return ['success' => true, 'message' => 'Заказ успешно создан', 'order_id' => $order->id];
+        }
+
+        return ['success' => false, 'message' => 'Ошибка при создании заказа', 'errors' => $order->errors];
+    }
+
+    private function generateTrackingNumber()
+    {
+        return uniqid('TRACK-'); // или любой другой способ генерации номера
+    }
+    public function actionCancel($id)
 {
-    $request = Yii::$app->request;
-    $orderData = $request->getBodyParams();
+    $order = $this->findModel($id);
 
-    // Валидация данных заказа (можно использовать сценарии валидации)
-    $order = new Orders();
-    $order->load($orderData, '');
-    $order->user_id = Yii::$app->user->id;
+    // Проверяем, что заказ можно отменить (например, он не находится в статусе "отправлен")
+    if ($order->status === 'shipped') {
+        throw new UnprocessableEntityHttpException('Cannot cancel a shipped order.');
+    }
 
-    // Получаем элементы заказа из запроса
-    $orderItemsData = $orderData['orderItems'] ?? []; // Предполагаем, что элементы заказа приходят в массиве 'orderItems'
+    $order->status = 'canceled';
+    if ($order->save()) {
+        return ['success' => true, 'message' => 'Order canceled successfully.'];
+    } else {
+        throw new ServerErrorHttpException('Failed to cancel order.');
+    }
+}
+
+public function actionDelete($id)
+{
+    $order = $this->findModel($id);
 
     // Начинаем транзакцию
     $transaction = Yii::$app->db->beginTransaction();
     try {
-        if (!$order->save()) {
-            throw new UnprocessableEntityHttpException(json_encode($order->getErrors()));
-        }
+        // Удаляем элементы заказа
+        OrderItems::deleteAll(['order_id' => $order->id]);
 
-        // Создаем элементы заказа
-        foreach ($orderItemsData as $itemData) {
-            $orderItem = new OrderItems();
-            $itemData['order_id'] = $order->id; // Привязываем к созданному заказу
-            $orderItem->load($itemData, '');
+        // Удаляем заказ
+        $order->delete();
 
-            if (!$orderItem->save()) {
-                throw new UnprocessableEntityHttpException(json_encode($orderItem->getErrors()));
-            }
-        }
-
-        // Подтверждаем транзакцию
         $transaction->commit();
 
-        $response = Yii::$app->getResponse();
-        $response->setStatusCode(201);
-        $id = implode(',', array_values($order->getPrimaryKey(true)));
-        $response->getHeaders()->set('Location', \yii\helpers\Url::toRoute(['view', 'id' => $id], true));
-        return $order;
+        Yii::$app->getResponse()->setStatusCode(204); // No Content
 
     } catch (\Exception $e) {
         $transaction->rollBack();
-        Yii::error('Failed to create order: ' . $e->getMessage()); // Логируем ошибку
-        throw $e; // Пробрасываем исключение дальше
+        Yii::error('Failed to delete order: ' . $e->getMessage() . "\n" . $e->getTraceAsString(), 'orders');
+        throw new ServerErrorHttpException('Failed to delete order.');
     }
 }
-
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-        $model->load(Yii::$app->getRequest()->getBodyParams(), '');
-
-        if ($model->save()) {
-            return $model;
-        } elseif (!$model->hasErrors()) {
-            throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
-        } else {
-            throw new UnprocessableEntityHttpException(json_encode($model->getErrors()));
-        }
-    }
-
-    public function actionDelete($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->delete() === false) {
-            throw new ServerErrorHttpException('Failed to delete the object for unknown reason.');
-        }
-
-        Yii::$app->getResponse()->setStatusCode(204);
-    }
 
     public function actionChangeStatus($id)
     {
