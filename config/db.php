@@ -2,9 +2,9 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=127.0.0.1;dbname=watchshop',
-    'username' => 'root',
-    'password' => 'Q1qqqqqq',
+    'dsn' => 'mysql:host=nikitu2c.beget.tech;dbname=nikitu2c_diplom',
+    'username' => 'nikitu2c_diplom',
+    'password' => 'S12s36aa11.',
     'charset' => 'utf8mb4',
     
 

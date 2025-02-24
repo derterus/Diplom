@@ -54,13 +54,30 @@ class ManufacturersController extends Controller
     }
 
     public function actionIndex()
-    {
-        $manufacturers = Manufacturers::find()->all();
-        if ($manufacturers) {
-            return $manufacturers;
-        }
-        throw new NotFoundHttpException('Производители не найдены.');
-    }
+{
+    // Получаем всех производителей с нужными полями
+    $manufacturers = Manufacturers::find()->all();
+
+    // Преобразуем данные в формат массива
+    $result = array_map(function ($manufacturer) {
+        return [
+            'id' => $manufacturer->id,
+            'name' => $manufacturer->name,
+            'country' => $manufacturer->country,
+            'logo' => $manufacturer->logo
+                ? Yii::$app->request->hostInfo . Yii::$app->request->baseUrl . $manufacturer->logo
+                : null, // Преобразуем путь к логотипу в полный URL
+            'website' => $manufacturer->website,
+            'contact_email' => $manufacturer->contact_email,
+            'phone' => $manufacturer->phone,
+            'description' => $manufacturer->description,
+        ];
+    }, $manufacturers);
+
+    // Возвращаем преобразованные данные
+    return $result;
+}
+
 
     public function actionView($id)
     {

@@ -32,6 +32,7 @@ class ProductsController extends Controller
         $behaviors['access'] = [
             'class' => AccessControl::class,
             'rules' => [
+                
                 [
                     'allow' => true,
                     'actions' => ['index', 'view'],
@@ -55,10 +56,67 @@ class ProductsController extends Controller
 
     // Method to get all products
     public function actionIndex()
-    {
-        $products = Products::find()->all();
-        return $products;
-    }
+{
+    // Получаем все товары
+    $products = Products::find()->with('productImages')->all();
+
+    // Новинки - последние  добавленные товара
+    $newArrivals = Products::find()
+        ->orderBy(['created_at' => SORT_DESC])
+        ->limit(20)
+        ->with('productImages')
+        ->all();
+
+    // Выгодные предложения - товары с самой большой скидкой
+    $bestDeals = Products::find()
+        ->where(['>', 'discount_percentage', 0])
+        ->orderBy(['discount_percentage' => SORT_DESC]) // Сортируем по скидке
+        ->limit(20) // Выбираем  товары с максимальной скидкой
+        ->with('productImages')
+        ->all();
+
+    // Преобразуем данные для API
+    $transformProduct = function ($product) {
+        // Рассчитываем цену с учетом скидки
+        $discountedPrice = $product->price;
+        if ($product->discount_percentage) {
+            // Считаем цену со скидкой
+            $discountedPrice = $product->price * (1 - $product->discount_percentage / 100);
+        }
+
+        return [
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $product->price,
+            'discounted_price' => round($discountedPrice, 2),  // Цена со скидкой
+            'description' => $product->description,
+            'discount_percentage' => $product->discount_percentage,  // Процент скидки
+            'image' => isset($product->productImages[0]) 
+                ? Yii::$app->request->hostInfo . Yii::$app->request->baseUrl . $product->productImages[0]->url
+                : null,
+        ];
+    };
+
+    // Преобразуем все товары, новинки и выгодные предложения
+    $result = array_map($transformProduct, $products);
+    $newArrivals = array_map($transformProduct, $newArrivals);
+    $bestDeals = array_map($transformProduct, $bestDeals);
+
+    // Возвращаем данные в формате JSON
+    return $this->asJson([
+        'products' => $result,         // Все товары
+        'newArrivals' => $newArrivals,  // Новинки
+        'bestDeals' => $bestDeals,      // Выгодные предложения
+    ]);
+}
+
+    
+
+    
+    
+    
+    
+    
 
     // Method to get one product, including images and characteristics
     public function actionView($id)

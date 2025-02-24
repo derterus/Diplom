@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --primary-color: #f97316; /* Orange-500 */
+        --primary-dark: #ea580c; /* Orange-600 */
+        --accent-color: #2563eb; /* Blue-500 */
+        --text-color: #4a5568; /* Gray-600 */
+        --bg-color: #fff7ed; /* Orange-50 */
+        --card-bg: #ffffff; /* White */
+        --font-main: 'Montserrat', sans-serif;
+        --font-secondary: 'Open Sans', sans-serif;
+    }
+
+    body {
+        font-family: var(--font-main);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-main);
+        font-weight: 700;
+        color: #000; /*  Черный цвет для всех заголовков */
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    a {
+        color: var(--primary-color);
+        transition: color 0.3s ease;
+    }
+
+    a:hover {
+        color: var(--primary-dark);
+    }
+
+    .btn-primary {
+        @apply bg-primary-color hover:bg-primary-dark text-white font-semibold py-2 px-4 rounded-xl transition duration-300;
+    }
+}
+
+/* Custom Components */
+.product-card {
+    @apply bg-card-bg rounded-2xl shadow-md overflow-hidden flex flex-col h-full transition-transform transform hover:scale-105;
+    min-height: 450px; /*  Минимальная высота для размещения длинных названий */
+    width: 300px;  /*  Фиксированная ширина */
+    flex: 0 0 auto; /* Не сжимать и не растягивать */
+    margin-right: 1.5rem; /*  Отступ между карточками */
+}
+
+.product-image {
+    @apply w-full object-contain; /*  Используем object-contain */
+    height: 200px;  /*  Фиксированная высота изображения */
+}
+
+.product-info {
+    @apply p-6 flex flex-col flex-grow;
+}
+
+.product-name {
+    @apply text-xl font-semibold mb-3 overflow-hidden;
+    overflow-wrap: break-word; /* Разрешаем перенос слов */
+    hyphens: auto; /* Включаем автоматические переносы */
+}
+
+.current-price {
+    @apply font-bold text-lg text-text-color;
+}
+
+.discount-price {
+    @apply text-gray-500 line-through mr-3;
+}
+
+.btn-more {
+    @apply btn-primary mt-4 block text-center;
+}
+
+/* Product List Slider */
+.product-list-slider {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden; /* Убираем вертикальную прокрутку */
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.5rem 0; /* Добавим немного отступов для лучшего вида */
+}
+
+/* Исправление проблемы с пропадающим текстом */
+.btn-primary:hover {
+    color: white; /* Явно указываем белый цвет текста при наведении */
+}
+/* Секция с логотипами производителей */
+.manufacturers-section {
+    /* Добавим, если нужно, отступы между секциями */
+    /* margin-bottom: 2rem; */
+}
+
+.manufacturers-logos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 1rem; /*  Добавим отступы по бокам */
+}
+
+.manufacturer-logo-container {
+    /*  Убрали стили, которые влияют на размер */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(248, 248, 248, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.manufacturer-logo-container:hover {
+    transform: scale(1.1);
+}
+
+.manufacturer-logo-container img {
+    width: 200px;           /* Фиксированная ширина */
+    height: 200px;          /* Фиксированная высота */
+    object-fit: scale-down; /*  Уменьшаем, если больше, не увеличиваем */
+    border-radius: 50%;       /* Круглые лого */
+}
+
+
+
+
+
+
+
+
+
+
+

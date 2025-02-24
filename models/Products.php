@@ -17,7 +17,7 @@ use Yii;
  * @property int|null $stock_quantity
  * @property string|null $created_at
  * @property string|null $updated_at
-
+ * @property float|null $discount_percentage  // Поле для скидки в процентах
  *
  * @property Categories $category
  * @property Manufacturers $manufacturer
@@ -43,8 +43,9 @@ class Products extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'price'], 'required'],
-            [['price', 'display_size'], 'number'],
-            [['description', 'color_options'], 'string'],
+            [['price'], 'number'],
+            [['discount_percentage'], 'number'],  // Убедимся, что скидка тоже является числом
+            [['description'], 'string'],
             [['category_id', 'manufacturer_id', 'stock_quantity'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 255],
@@ -70,6 +71,7 @@ class Products extends \yii\db\ActiveRecord
             'stock_quantity' => 'Stock Quantity',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+            'discount_percentage' => 'Discount Percentage',  // Новое поле для скидки
         ];
     }
 

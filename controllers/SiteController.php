@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use yii\httpclient\Client;
+use yii\web\HttpException;
 
 class SiteController extends Controller
 {
@@ -59,10 +61,57 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
-    {
-        return $this->render('index');
-    }
+
+
+     public function actionIndex()
+     {
+         // Получаем токен из параметров конфигурации
+         $token = Yii::$app->params['apiToken'];
+     
+         // Путь к API для продуктов
+         $productsApiUrl = Yii::$app->request->baseUrl . '/api/products';
+         // Путь к API для производителей
+         $manufacturersApiUrl = Yii::$app->request->baseUrl . '/api/manufacturers';
+     
+         // Создаем HTTP клиент
+         $client = new Client();
+     
+         try {
+             // Запрос для получения продуктов
+             $productResponse = $client->get(Yii::$app->request->hostInfo . $productsApiUrl, [], [
+                 'Authorization' => 'Bearer ' . $token,
+             ])->send();
+     
+             // Запрос для получения производителей
+             $manufacturerResponse = $client->get(Yii::$app->request->hostInfo . $manufacturersApiUrl, [], [
+                 'Authorization' => 'Bearer ' . $token,
+             ])->send();
+     
+             // Если запросы прошли успешно
+             if ($productResponse->isOk && $manufacturerResponse->isOk) {
+                 $products = $productResponse->data['products']; // Получаем из products
+                 $newArrivals = $productResponse->data['newArrivals']; // Получаем из newArrivals
+                 $bestDeals = $productResponse->data['bestDeals']; // Получаем из bestDeals
+                 $manufacturers = $manufacturerResponse->data;
+             } else {
+                 // Если произошла ошибка при запросе
+                 throw new HttpException($productResponse->statusCode, 'Error while making API request');
+             }
+         } catch (\Exception $e) {
+             // Обработка ошибок, если что-то пошло не так
+             throw new HttpException(500, 'API request failed: ' . $e->getMessage());
+         }
+     
+         // Возвращаем данные в представление
+         return $this->render('index', [
+             'products' => $products,
+             'newArrivals' => $newArrivals,
+             'bestDeals' => $bestDeals,
+             'manufacturers' => $manufacturers,
+         ]);
+     }
+
+    
 
     /**
      * Login action.

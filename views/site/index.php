@@ -1,53 +1,124 @@
 <?php
 
 /** @var yii\web\View $this */
+/** @var array $products */
+/** @var array $newArrivals */
+/** @var array $bestDeals */
+/** @var array $manufacturers */
 
-$this->title = 'My Yii Application';
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+$this->title = 'Главная страница - Магазин смарт-часов';
 ?>
+
 <div class="site-index">
 
-    <div class="jumbotron text-center bg-transparent mt-5 mb-5">
-        <h1 class="display-4">Congratulations!</h1>
+    <!-- Hero Section -->
+    <section class="bg-bg-color py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl font-bold text-primary-dark mb-8">Технологии будущего на вашем запястье</h1>
+            <p class="text-xl text-text-color mb-12">
+                Откройте для себя мир смарт-часов. Отслеживайте свою активность, получайте уведомления и оставайтесь всегда на связи.
+            </p>
+            <a href="<?= Url::to(['product/index']) ?>" class="btn-primary">Смотреть все модели</a>
+        </div>
+    </section>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="https://www.yiiframework.com">Get started with Yii</a></p>
+    <!-- Раздел скидок -->
+    <div class="promo-discount py-12">
+        <h3 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
+            <i class="fas fa-percent mr-2"></i> Лучшие скидки
+        </h3>
+        <div class="product-list-slider flex overflow-x-auto space-x-6 px-6">
+            <?php foreach ($bestDeals as $product): ?>
+                <div class="product-card">
+                    <img class="product-image" src="<?= Html::encode($product['image']) ?>" alt="<?= Html::encode($product['name']) ?>" />
+                    <div class="product-info">
+                        <h4 class="product-name"><?= Html::encode($product['name']) ?></h4>
+                        <!-- Ряд для цены и скидки -->
+                        <div class="price-row flex items-center mt-auto">
+                            <?php if ($product['discount_percentage'] > 0): ?>
+                                <p class="discount-price">
+                                    <?= Html::encode($product['price']) ?> ₽
+                                </p>
+                                <p class="current-price text-accent-color">
+                                    <?= Html::encode($product['price'] * (1 - $product['discount_percentage'] / 100)) ?> ₽
+                                </p>
+                            <?php else: ?>
+                                <p class="current-price"><?= Html::encode($product['price']) ?> ₽</p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <!-- Кнопка "Подробнее" -->
+                    <a href="<?= Url::to(['product/view', 'id' => $product['id']]) ?>" class="btn-more">Подробнее</a>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 
-    <div class="body-content">
+    <!-- Раздел новинок -->
+    <div class="promo-new-arrivals py-12 bg-orange-50">
+        <h3 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
+            <i class="fas fa-watch mr-2"></i> Новинки
+        </h3>
+        <div class="product-list-slider flex overflow-x-auto space-x-6 px-6">
+            <?php foreach ($newArrivals as $product): ?>
+                <div class="product-card">
+                    <img class="product-image" src="<?= Html::encode($product['image']) ?>" alt="<?= Html::encode($product['name']) ?>" />
+                    <div class="product-info">
+                        <h4 class="product-name"><?= Html::encode($product['name']) ?></h4>
+                        <!-- Проверка на наличие скидки -->
+                        <div class="price-row flex items-center mt-auto">
+                            <?php if ($product['discount_percentage'] > 0): ?>
+                                <p class="discount-price">
+                                    <?= Html::encode($product['price']) ?> ₽
+                                </p>
+                                <p class="current-price text-accent-color">
+                                    <?= Html::encode($product['price'] * (1 - $product['discount_percentage'] / 100)) ?> ₽
+                                </p>
+                            <?php else: ?>
+                                <p class="current-price"><?= Html::encode($product['price']) ?> ₽</p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <!-- Кнопка "Подробнее" -->
+                    <a href="<?= Url::to(['product/view', 'id' => $product['id']]) ?>" class="btn-more">Подробнее</a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
-        <div class="row">
-            <div class="col-lg-4 mb-3">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
+     <!-- Секция с логотипами производителей -->
+<div class="manufacturers-section py-12">
+    <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">Наши производители</h2>
+    <div class="manufacturers-logos flex flex-wrap justify-center gap-8 px-6">
+        <?php foreach ($manufacturers as $manufacturer): ?>
+            <div class="manufacturer-logo-container">  <!-- Изменено: используем контейнер -->
+                <a href="<?= Url::to(['site/brand', 'id' => $manufacturer['id']]) ?>">
+                    <img src="<?= Html::encode($manufacturer['logo']) ?>" alt="<?= Html::encode($manufacturer['name']) ?>" />
+                </a>
             </div>
-            <div class="col-lg-4 mb-3">
-                <h2>Heading</h2>
+        <?php endforeach; ?>
+    </div>
+</div>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
+    <!-- Раздел с бонусами или рекомендациями -->
+    <div class="bonus-section py-12 bg-white">
+        <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">Рекомендуем вам</h2>
+        <div class="bonus-items grid grid-cols-1 md:grid-cols-3 gap-8 px-6">
+            <div class="bonus-item p-8 rounded-3xl shadow-md bg-orange-50">
+                <h3 class="text-xl font-semibold text-primary-dark mb-3"><i class="fas fa-shield-alt mr-2"></i> Гарантия качества</h3>
+                <p class="text-text-color">Все наши часы проходят строгий контроль качества, чтобы обеспечить вам долгосрочную эксплуатацию и надежность.</p>
             </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
+            <div class="bonus-item p-8 rounded-3xl shadow-md bg-orange-50">
+                <h3 class="text-xl font-semibold text-primary-dark mb-3"><i class="fas fa-shipping-fast mr-2"></i> Бесплатная доставка</h3>
+                <p class="text-text-color">Мы предлагаем бесплатную доставку для всех заказов на сумму от 5000 ₽.</p>
+            </div>
+            <div class="bonus-item p-8 rounded-3xl shadow-md bg-orange-50">
+                <h3 class="text-xl font-semibold text-primary-dark mb-3"><i class="fas fa-headset mr-2"></i> Поддержка 24/7</h3>
+                <p class="text-text-color">Наша служба поддержки готова ответить на ваши вопросы и помочь в любой ситуации.</p>
             </div>
         </div>
-
     </div>
 </div>
