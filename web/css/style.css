@@ -128,7 +128,25 @@
 }
 
 
+.site-about section {
+    margin-bottom: 2rem; /* Добавляем отступы между секциями */
+}
 
+.site-about .container {
+    margin-top: 2rem;
+    margin-bottom: 2rem; /* Контейнеры с отступами */
+}
+
+/* Пример кастомного стиля для секции */
+.section-padding {
+    padding: 2rem 0;
+}
+
+/* Для карточек в сетке */
+.grid-item {
+    margin-top: 1rem;  /* Отступ сверху у каждого блока */
+    margin-bottom: 1rem;  /* Отступ снизу у каждого блока */
+}
 
 
 
