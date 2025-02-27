@@ -10,7 +10,7 @@ $this->title = 'О нас - Магазин смарт-часов';
 
 <div class="site-about">
     <!-- Hero Section -->
-    <section class="bg-bg-color py-20">
+    <section class="bg-bg-color py-15">
         <div class="container mx-auto px-4 text-center">
             <h1 class="text-5xl font-bold text-primary-dark mb-8">О нашей компании</h1>
             <p class="text-xl text-text-color mb-8">
@@ -19,7 +19,7 @@ $this->title = 'О нас - Магазин смарт-часов';
         </div>
     </section>
     <!-- Раздел "Наша история" -->
-    <section class="py-12">
+    <section class="py-3">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
                 <i class="fas fa-history mr-2"></i> Наша история
@@ -53,7 +53,7 @@ $this->title = 'О нас - Магазин смарт-часов';
         </div>
     </section>
     <!-- Раздел "Наша команда" -->
-    <section class="py-12 bg-gray-100">
+    <section class="py-3 ">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
                 <i class="fas fa-users mr-2"></i> Наша команда сегодня
@@ -74,7 +74,7 @@ $this->title = 'О нас - Магазин смарт-часов';
             </div>
         </div>
     </section>
-    <section class="py-12">
+    <section class="py-3">
     <div class="container mx-auto px-4">
         <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
             <i class="fas fa-user-circle mr-2"></i> Для клиентов
@@ -120,7 +120,7 @@ $this->title = 'О нас - Магазин смарт-часов';
     </div>
 </section>
 <!-- Раздел "Для сотрудников" -->
-<section class="py-12 bg-gray-100">
+<section class="py-3">
     <div class="container mx-auto px-4">
         <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
             <i class="fas fa-briefcase mr-2"></i> Для сотрудников
@@ -166,7 +166,7 @@ $this->title = 'О нас - Магазин смарт-часов';
     </div>
 </section>
 <!-- Раздел "Для партнеров" -->
-<section class="py-12">
+<section class="py-3">
     <div class="container mx-auto px-4">
         <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
             <i class="fas fa-handshake mr-2"></i> Для партнеров
@@ -212,7 +212,7 @@ $this->title = 'О нас - Магазин смарт-часов';
     </div>
 </section>
     <!-- Раздел "Свяжитесь с нами" -->
-    <section class="py-12 bg-gray-100">
+    <section class="py-3 ">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
                 <i class="fas fa-envelope mr-2"></i> Свяжитесь с нами

@@ -17,6 +17,7 @@ $config = [
             'cookieValidationKey' => 'WZTZiG-MCBxphBcHRILFldyLnogGSLqD',
             
         ],
+        
         'httpclient' => [
             'class' => 'yii\httpclient\Client',
         ],

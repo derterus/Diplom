@@ -1,5 +1,4 @@
 <?php
-
 /** @var \yii\web\View $this */
 /** @var string $content */
 
@@ -26,9 +25,83 @@ $this->registerLinkTag(['rel' => 'stylesheet', 'href' => 'https://fonts.googleap
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>" class="h-100">
 <head>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+    <style>
+        /* Скрытая шапка */
+.header-hidden {
+    transform: translateY(-100%); /* Скрытие шапки при прокрутке */
+    transition: transform 0.3s ease; /* Плавное скрытие */
+}
+
+/* Мобильные стили для меню */
+@media (max-width: 768px) {
+    .menu {
+        display: none;
+        flex-direction: column !important;
+        gap: 15px;
+        background-color: #fff;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        align-items: center;
+    }
+
+    .menu.active {
+        display: flex !important;
+    }
+
+    .burger-icon {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    .burger-icon div {
+        height: 4px;
+        background-color: #333;
+        border-radius: 4px;
+    }
+
+    .menu > .nav-item {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+
+/* Для десктопа (не показываем бургер меню) */
+@media (min-width: 769px) {
+    .menu {
+        display: flex; /* Для десктопа элементы идут в строку */
+        flex-direction: row; /* Элементы в строку */
+        gap: 20px;
+    }
+
+    .menu a {
+        font-size: 18px;
+        padding: 10px 15px;
+        color: #333;
+    }
+
+    .menu a:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .burger-icon {
+        display: none; /* Прячем иконку бургера на десктопах */
+    }
+}
+    </style>
 </head>
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
@@ -43,46 +116,51 @@ $this->registerLinkTag(['rel' => 'stylesheet', 'href' => 'https://fonts.googleap
             </a>
         </div>
 
-        <!-- Правая часть (Меню) -->
-        <div>
-            <?php
-            echo Nav::widget([
-                'options' => ['class' => 'flex space-x-4'],
-                'items' => [
-                    ['label' => 'Каталог', 'url' => ['/site/catalog'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']],
-                    ['label' => 'О нас', 'url' => ['/site/about'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']],
-                    ['label' => 'Контакты', 'url' => ['/site/contact'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']],
-                    Yii::$app->user->isGuest ? (
-                        ['label' => 'Вход', 'url' => ['/site/login'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']]
-                    ) : (
-                        [
-                            'label' => 'Выход (' . Yii::$app->user->identity->username . ')',
-                            'url' => ['/site/logout'],
-                            'linkOptions' => [
-                                'class' => 'text-gray-700 hover:text-gray-900',
-                                'data' => [
-                                    'method' => 'post',
-                                ],
-                            ],
-                        ]
-                    ),
-                    Yii::$app->user->isGuest ? (
-                        ['label' => 'Регистрация', 'url' => ['/site/signup'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']]
-                    ) : (
-                        ['label' => 'Профиль', 'url' => ['/profile/index'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']] // Замените '/profile/index' на актуальный URL профиля
-                    ),
-                    ['label' => $this->render('_cart_icon'), 'url' => ['/cart/index'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']],
+        <!-- Бургер-меню -->
+<div class="burger-icon" id="burger-icon" onclick="toggleMenu()">
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
 
-
-                ],
-            ]);
-            ?>
-        </div>
-    </div>
+<!-- Меню -->
+<div id="menu" class="menu">
+    <?php
+    echo Nav::widget([
+        'options' => ['class' => 'flex space-x-4'],
+        'items' => [
+            ['label' => 'Каталог', 'url' => ['/site/catalog'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']],
+            ['label' => 'О нас', 'url' => ['/site/about'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']],
+            ['label' => 'Контакты', 'url' => ['/site/contact'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']],
+            Yii::$app->user->isGuest ? (
+                ['label' => 'Вход', 'url' => ['/site/login'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']]
+            ) : (
+                [
+                    'label' => 'Выход (' . Yii::$app->user->identity->username . ')',
+                    'url' => ['/site/logout'],
+                    'linkOptions' => [
+                        'class' => 'text-gray-700 hover:text-gray-900',
+                        'data' => [
+                            'method' => 'post',
+                        ],
+                    ],
+                ]
+            ),
+            Yii::$app->user->isGuest ? (
+                ['label' => 'Регистрация', 'url' => ['/site/signup'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']]
+            ) : (
+                ['label' => 'Профиль', 'url' => ['/profile/index'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']] 
+            ),
+            ['label' => $this->render('_cart_icon'), 'url' => ['/cart/index'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']],
+        ],
+    ]);
+    ?>
+</div>
+</div>
 </header>
 
 <main id="main" class="flex-shrink-0" role="main">
-    <div class="container mx-auto px-4 pt-20">  <!--  Добавлен pt-20 для отступа -->
+    <div class="container mx-auto px-4 pt-20">
         <?= Breadcrumbs::widget([
             'links' => !empty($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
@@ -118,7 +196,7 @@ $this->registerLinkTag(['rel' => 'stylesheet', 'href' => 'https://fonts.googleap
             <div>
                 <h4 class="font-semibold text-white mb-2">Контакты</h4>
                 <p class="text-gray-300">Телефон: +7 (123) 456-78-90</p>
-                <p class="text-gray-300">Email: info@example.com</p>
+                <p class="text-gray-300">Email: info@smartwatchstore.com</p>
             </div>
 
             <!-- Методы оплаты -->
@@ -142,6 +220,31 @@ $this->registerLinkTag(['rel' => 'stylesheet', 'href' => 'https://fonts.googleap
 </footer>
 
 <?php $this->endBody() ?>
+
+<script>
+    // Функция для открытия/закрытия меню
+    function toggleMenu() {
+        const menu = document.getElementById('menu');
+        menu.classList.toggle('active');
+    }
+
+    // Скрипт для скрытия шапки при прокрутке
+    let lastScrollTop = 0;
+    const header = document.getElementById('header');
+
+    window.addEventListener('scroll', function () {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > lastScrollTop) {
+            header.classList.add('header-hidden');
+        } else {
+            header.classList.remove('header-hidden');
+        }
+
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+</script>
+
 </body>
 </html>
 <?php $this->endPage() ?>
