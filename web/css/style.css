@@ -147,4 +147,81 @@
     margin-top: 1rem;  /* Отступ сверху у каждого блока */
     margin-bottom: 1rem;  /* Отступ снизу у каждого блока */
 }
+/* Скрытие вертикальной полосы прокрутки */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
 
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Отключаем вертикальную прокрутку */
+#manufacturers-slider {
+    overflow-y: hidden;
+}
+
+/* Устанавливаем стрелки по бокам */
+#scroll-left {
+    left: 0;
+}
+
+#scroll-right {
+    right: 0;
+}
+
+/* Делаем стрелки за пределами слайдера */
+#scroll-left, #scroll-right {
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #f0f0f0;
+    padding: 12px;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+/* Минимальное расстояние между элементами */
+.manufacturer-logo-container {
+    margin: 0 15px; /* Добавлено пространство между изображениями */
+}
+
+
+/* Скрытие вертикальной полосы прокрутки */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Стрелки по бокам */
+#scroll-left-discount, #scroll-left-new-arrivals,
+#scroll-right-discount, #scroll-right-new-arrivals {
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #f0f0f0;
+    padding: 12px;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+/* Прокрутка только по горизонтали */
+#discount-slider, #new-arrivals-slider {
+    overflow-y: hidden;
+}
+
+/* Отступы между карточками товаров */
+.product-card {
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+/* Контейнеры для карточек продуктов */
+.product-list-slider {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+}

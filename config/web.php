@@ -7,6 +7,7 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'language' => 'ru-RU', // Устанавливаем русский язык
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -108,6 +109,17 @@ $config = [
         ],
         ],
     ],
+    'i18n' => [
+        'translations' => [
+            'app*' => [
+                'class' => 'yii\i18n\PhpMessageSource',
+                'basePath' => '@app/messages', // Путь к папке с вашими переводами
+                'fileMap' => [
+                    'app' => 'app.php', // Ваш файл с переводами
+                ],
+            ],
+        ],
+    ],
         'db' => $db,
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -140,6 +152,8 @@ $config = [
         '/registration' => 'site/registration',
         '/category/<id:\d+>' => 'site/category',
         '/product/<id:\d+>' => 'site/product',
+        '/register' => 'site/register',
+        '/catalog' => 'site/catalog',
     ],
 ],
     ],

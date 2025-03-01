@@ -25,83 +25,114 @@ $this->title = 'Главная страница - Магазин смарт-ча
         </div>
     </section>
 
-    <!-- Раздел скидок -->
-    <div class="promo-discount py-12">
-        <h3 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
-            <i class="fas fa-percent mr-2"></i> Лучшие скидки
-        </h3>
-        <div class="product-list-slider flex overflow-x-auto space-x-6 px-6">
+<!-- Раздел скидок -->
+<div class="promo-discount py-12">
+    <h3 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
+        <i class="fas fa-percent mr-2"></i> Лучшие скидки
+    </h3>
+    <div class="relative">
+        <!-- Кнопка "назад" -->
+        <button id="scroll-left-discount" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-3 rounded-full shadow-md z-10">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Контейнер для горизонтальной прокрутки -->
+        <div id="discount-slider" class="flex overflow-x-auto space-x-6 px-6 no-scrollbar">
             <?php foreach ($bestDeals as $product): ?>
-                <div class="product-card">
+                <div class="product-card flex-shrink-0 w-60">
                     <img class="product-image" src="<?= Html::encode($product['image']) ?>" alt="<?= Html::encode($product['name']) ?>" />
                     <div class="product-info">
                         <h4 class="product-name"><?= Html::encode($product['name']) ?></h4>
-                        <!-- Ряд для цены и скидки -->
                         <div class="price-row flex items-center mt-auto">
                             <?php if ($product['discount_percentage'] > 0): ?>
-                                <p class="discount-price">
-                                    <?= Html::encode($product['price']) ?> ₽
-                                </p>
-                                <p class="current-price text-accent-color">
-                                    <?= Html::encode($product['price'] * (1 - $product['discount_percentage'] / 100)) ?> ₽
-                                </p>
+                                <p class="discount-price"><?= Html::encode($product['price']) ?> ₽</p>
+                                <p class="current-price text-accent-color"><?= Html::encode($product['price'] * (1 - $product['discount_percentage'] / 100)) ?> ₽</p>
                             <?php else: ?>
                                 <p class="current-price"><?= Html::encode($product['price']) ?> ₽</p>
                             <?php endif; ?>
                         </div>
                     </div>
-                    <!-- Кнопка "Подробнее" -->
                     <a href="<?= Url::to(['product/view', 'id' => $product['id']]) ?>" class="btn-more">Подробнее</a>
                 </div>
             <?php endforeach; ?>
         </div>
-    </div>
 
-    <!-- Раздел новинок -->
-    <div class="promo-new-arrivals py-12 bg-orange-50">
-        <h3 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
-            <i class="fas fa-watch mr-2"></i> Новинки
-        </h3>
-        <div class="product-list-slider flex overflow-x-auto space-x-6 px-6">
-            <?php foreach ($newArrivals as $product): ?>
-                <div class="product-card">
-                    <img class="product-image" src="<?= Html::encode($product['image']) ?>" alt="<?= Html::encode($product['name']) ?>" />
-                    <div class="product-info">
-                        <h4 class="product-name"><?= Html::encode($product['name']) ?></h4>
-                        <!-- Проверка на наличие скидки -->
-                        <div class="price-row flex items-center mt-auto">
-                            <?php if ($product['discount_percentage'] > 0): ?>
-                                <p class="discount-price">
-                                    <?= Html::encode($product['price']) ?> ₽
-                                </p>
-                                <p class="current-price text-accent-color">
-                                    <?= Html::encode($product['price'] * (1 - $product['discount_percentage'] / 100)) ?> ₽
-                                </p>
-                            <?php else: ?>
-                                <p class="current-price"><?= Html::encode($product['price']) ?> ₽</p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <!-- Кнопка "Подробнее" -->
-                    <a href="<?= Url::to(['product/view', 'id' => $product['id']]) ?>" class="btn-more">Подробнее</a>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-
-     <!-- Секция с логотипами производителей -->
-<div class="manufacturers-section py-12">
-    <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">Наши производители</h2>
-    <div class="manufacturers-logos flex flex-wrap justify-center gap-8 px-6">
-        <?php foreach ($manufacturers as $manufacturer): ?>
-            <div class="manufacturer-logo-container">  <!-- Изменено: используем контейнер -->
-                <a href="<?= Url::to(['site/brand', 'id' => $manufacturer['id']]) ?>">
-                    <img src="<?= Html::encode($manufacturer['logo']) ?>" alt="<?= Html::encode($manufacturer['name']) ?>" />
-                </a>
-            </div>
-        <?php endforeach; ?>
+        <!-- Кнопка "вперед" -->
+        <button id="scroll-right-discount" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-3 rounded-full shadow-md z-10">
+            <i class="fas fa-chevron-right"></i>
+        </button>
     </div>
 </div>
+
+
+<!-- Раздел новинок -->
+<div class="promo-new-arrivals py-12 bg-orange-50">
+    <h3 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
+        <i class="fas fa-watch mr-2"></i> Новинки
+    </h3>
+    <div class="relative">
+        <!-- Кнопка "назад" -->
+        <button id="scroll-left-new-arrivals" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-3 rounded-full shadow-md z-10">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Контейнер для горизонтальной прокрутки -->
+        <div id="new-arrivals-slider" class="flex overflow-x-auto space-x-6 px-6 no-scrollbar">
+            <?php foreach ($newArrivals as $product): ?>
+                <div class="product-card flex-shrink-0 w-60">
+                    <img class="product-image" src="<?= Html::encode($product['image']) ?>" alt="<?= Html::encode($product['name']) ?>" />
+                    <div class="product-info">
+                        <h4 class="product-name"><?= Html::encode($product['name']) ?></h4>
+                        <div class="price-row flex items-center mt-auto">
+                            <?php if ($product['discount_percentage'] > 0): ?>
+                                <p class="discount-price"><?= Html::encode($product['price']) ?> ₽</p>
+                                <p class="current-price text-accent-color"><?= Html::encode($product['price'] * (1 - $product['discount_percentage'] / 100)) ?> ₽</p>
+                            <?php else: ?>
+                                <p class="current-price"><?= Html::encode($product['price']) ?> ₽</p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <a href="<?= Url::to(['product/view', 'id' => $product['id']]) ?>" class="btn-more">Подробнее</a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- Кнопка "вперед" -->
+        <button id="scroll-right-new-arrivals" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-3 rounded-full shadow-md z-10">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</div>
+
+
+
+    <div class="manufacturers-section py-12">
+    <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">Наши производители</h2>
+    
+    <div class="relative flex items-center">
+        <!-- Кнопка "назад" -->
+        <button id="scroll-left" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-3 rounded-full shadow-md z-10">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Контейнер для горизонтальной прокрутки -->
+        <div id="manufacturers-slider" class="flex overflow-x-auto space-x-6 px-6 scroll-smooth no-scrollbar">
+            <?php foreach ($manufacturers as $manufacturer): ?>
+                <div class="manufacturer-logo-container flex-shrink-0 w-40">
+                    <a href="<?= Url::to(['site/brand', 'id' => $manufacturer['id']]) ?>">
+                        <img class="w-full h-auto object-contain" src="<?= Html::encode($manufacturer['logo']) ?>" alt="<?= Html::encode($manufacturer['name']) ?>" />
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- Кнопка "вперед" -->
+        <button id="scroll-right" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-3 rounded-full shadow-md z-10">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</div>
+
 
     <!-- Раздел с бонусами или рекомендациями -->
     <div class="bonus-section py-12 bg-white">
@@ -122,3 +153,61 @@ $this->title = 'Главная страница - Магазин смарт-ча
         </div>
     </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const slider = document.getElementById("manufacturers-slider");
+    const btnLeft = document.getElementById("scroll-left");
+    const btnRight = document.getElementById("scroll-right");
+
+    const scrollAmount = 200; // Количество пикселей для прокрутки
+
+    btnLeft.addEventListener("click", function () {
+        slider.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+    });
+
+    btnRight.addEventListener("click", function () {
+        slider.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    });
+
+    // Предотвращаем прокрутку вверх и вниз
+    slider.addEventListener("wheel", function (e) {
+        if (e.deltaY !== 0) {
+            e.preventDefault();
+            slider.scrollBy({
+                left: e.deltaY > 0 ? scrollAmount : -scrollAmount,
+                behavior: "smooth"
+            });
+        }
+    });
+});
+document.addEventListener("DOMContentLoaded", function () {
+    function setupSlider(sliderId, btnLeftId, btnRightId) {
+        const slider = document.getElementById(sliderId);
+        const btnLeft = document.getElementById(btnLeftId);
+        const btnRight = document.getElementById(btnRightId);
+        const scrollAmount = 300; // Увеличил прокрутку для плавности
+
+        function checkButtons() {
+            btnLeft.style.opacity = slider.scrollLeft > 0 ? "1" : "0.3";
+            btnRight.style.opacity = slider.scrollLeft + slider.clientWidth < slider.scrollWidth ? "1" : "0.3";
+        }
+
+        btnLeft.addEventListener("click", function () {
+            slider.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+            setTimeout(checkButtons, 300);
+        });
+
+        btnRight.addEventListener("click", function () {
+            slider.scrollBy({ left: scrollAmount, behavior: "smooth" });
+            setTimeout(checkButtons, 300);
+        });
+
+        checkButtons(); // Проверяем начальное состояние кнопок
+    }
+
+    setupSlider("discount-slider", "scroll-left-discount", "scroll-right-discount");
+    setupSlider("new-arrivals-slider", "scroll-left-new-arrivals", "scroll-right-new-arrivals");
+    setupSlider("manufacturers-slider", "scroll-left", "scroll-right");
+});
+
+</script>

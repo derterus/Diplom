@@ -11,6 +11,10 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use yii\httpclient\Client;
 use yii\web\HttpException;
+use app\models\User;
+use app\models\RegistrationForm;
+use yii\widgets\ActiveForm;
+use yii\helpers\Json;
 
 class SiteController extends Controller
 {
@@ -113,36 +117,45 @@ class SiteController extends Controller
 
     
 
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
-    public function actionLogin()
+     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $client = new Client();
+            $apiUrl = Yii::$app->request->hostInfo . Yii::$app->request->baseUrl . '/auth/login';
+
+            try {
+                $response = $client->post($apiUrl, [
+                    'username' => $model->username,
+                    'password' => $model->password,
+                ])->send();
+
+                if ($response->isOk) {
+                    $data = $response->data;
+                    Yii::$app->session->set('access_token', $data['access_token']);
+                    Yii::$app->user->login(User::findIdentity($data['user']['id']), 3600 * 24 * 30);
+                    
+                    return $this->goBack();
+                } else {
+                    Yii::$app->session->setFlash('error', 'Invalid login credentials.');
+                }
+            } catch (\Exception $e) {
+                Yii::$app->session->setFlash('error', 'Login failed: ' . $e->getMessage());
+            }
         }
 
         $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+        return $this->render('login', ['model' => $model]);
     }
 
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
     public function actionLogout()
     {
         Yii::$app->user->logout();
+        Yii::$app->session->remove('access_token');
 
         return $this->goHome();
     }
@@ -174,4 +187,59 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+    public function actionRegister()
+{
+    $model = new RegistrationForm();
+
+    if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        
+        // Валидация модели
+        if ($model->validate()) {
+            return ['success' => true];
+        } else {
+            // Возвращаем ошибки в формате JSON
+            return ActiveForm::validate($model);
+        }
+    }
+
+    return $this->render('register', ['model' => $model]);
+}
+public function actionCatalog()
+{
+    // Получаем токен из параметров конфигурации
+    $token = Yii::$app->params['apiToken'];
+    // Путь к API для продуктов
+    $productsApiUrl = Yii::$app->request->baseUrl . '/api/products';
+    // Создаем HTTP клиент
+    $client = new Client();
+
+    try {
+        // Запрос для получения продуктов
+        $productResponse = $client->get(Yii::$app->request->hostInfo . $productsApiUrl, [], [
+            'Authorization' => 'Bearer ' . $token,
+        ])->send();
+
+        // Если запрос прошел успешно
+        if ($productResponse->isOk) {
+            // Получаем данные из API
+            $products = $productResponse->data['products']; // Продукты
+            $newArrivals = $productResponse->data['newArrivals']; // Новые поступления
+            $bestDeals = $productResponse->data['bestDeals']; // Лучшие предложения
+        }else {
+            // Если произошла ошибка при запросе
+            throw new HttpException($productResponse->statusCode, 'Ошибка при получении данных с API');
+        }
+    } catch (\Exception $e) {
+        // Обработка ошибок, если что-то пошло не так
+        throw new HttpException(500, 'Ошибка при запросе к API: ' . $e->getMessage());
+    }
+
+    // Передаем данные на страницу catalog.php
+    return $this->render('catalog', [
+        'products' => $products,
+        'newArrivals' => $newArrivals,
+        'bestDeals' => $bestDeals,
+    ]);
+}
 }

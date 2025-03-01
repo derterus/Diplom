@@ -34,9 +34,17 @@ class LoginForm extends Model
             ['password', 'validatePassword'],
         ];
     }
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Логин',
+            'password' => 'Пароль',
+            'rememberMe' => 'Запомнить меня',
+        ];
+    }
 
     /**
-     * Validates the password.
+     * Validates the password.  
      * This method serves as the inline validation for password.
      *
      * @param string $attribute the attribute currently being validated

@@ -7,7 +7,6 @@ use yii\rest\Controller;
 use app\models\User;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;
-use yii\helpers\Url;
 
 class RegistrationController extends Controller
 {
@@ -19,7 +18,7 @@ class RegistrationController extends Controller
         $data = json_decode(file_get_contents('php://input'), true); // Parse JSON
 
         if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
-            throw new UnprocessableEntityHttpException('Invalid JSON ' . json_last_error_msg());
+            throw new UnprocessableEntityHttpException('Invalid JSON: ' . json_last_error_msg());
         }
 
         $model = new User();
@@ -28,29 +27,36 @@ class RegistrationController extends Controller
         // Устанавливаем значение role перед сохранением
         $model->role = 'user';
 
+        // Пытаемся валидировать модель
         if ($model->validate()) {
-            $model->setPassword($model->password); // Hash password
+            // Хэшируем пароль перед сохранением
+            $model->setPassword($model->password); 
             $model->generateAuthKey();
             $model->generateAccessToken();
 
+            // Сохраняем модель в БД
             if ($model->save()) {
-                // Перезагружаем модель из базы данных, чтобы получить все атрибуты, включая роль
+                // Перезагружаем модель для получения актуальных данных
                 $user = User::findOne($model->id);
                 $user->refresh(); // Принудительная загрузка данных из БД
 
                 Yii::debug('User role after registration: ' . $user->role, 'auth');
 
+                // Возвращаем успешный ответ
                 return [
                     'message' => 'User registered successfully.',
                     'access_token' => $user->access_token,
                     'user' => $this->utf8Encode($user->toArray()), // Преобразуем данные в UTF-8
                 ];
             } else {
+                // Если сохранение не удалось, возвращаем ошибку
                 var_dump($model->getErrors()); // Выводим ошибки
-                throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
+                throw new ServerErrorHttpException('Failed to create the user for an unknown reason.');
             }
         } else {
-            throw new UnprocessableEntityHttpException(json_encode($this->utf8Encode($model->getErrors())));
+            // Если модель не прошла валидацию, возвращаем ошибку с детализированными проблемами
+            $errors = $this->utf8Encode($model->getErrors());
+            throw new UnprocessableEntityHttpException(json_encode($errors));
         }
     }
 

@@ -665,8 +665,20 @@ a:hover {
   left: 0px;
 }
 
+.right-0 {
+  right: 0px;
+}
+
 .top-0 {
   top: 0px;
+}
+
+.top-1\/2 {
+  top: 50%;
+}
+
+.z-10 {
+  z-index: 10;
 }
 
 .z-50 {
@@ -676,6 +688,10 @@ a:hover {
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+
+.mb-1 {
+  margin-bottom: 0.25rem;
 }
 
 .mb-12 {
@@ -722,6 +738,10 @@ a:hover {
   margin-top: 0.5rem;
 }
 
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
 .mt-6 {
   margin-top: 1.5rem;
 }
@@ -762,8 +782,20 @@ a:hover {
   height: 400px;
 }
 
+.h-auto {
+  height: auto;
+}
+
 .w-32 {
   width: 8rem;
+}
+
+.w-40 {
+  width: 10rem;
+}
+
+.w-60 {
+  width: 15rem;
 }
 
 .w-full {
@@ -776,6 +808,11 @@ a:hover {
 
 .flex-shrink-0 {
   flex-shrink: 0;
+}
+
+.-translate-y-1\/2 {
+  --tw-translate-y: -50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .transform {
@@ -798,14 +835,6 @@ a:hover {
 
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
-}
-
-.flex-col {
-  flex-direction: column;
-}
-
-.flex-wrap {
-  flex-wrap: wrap;
 }
 
 .items-center {
@@ -860,12 +889,20 @@ a:hover {
   overflow-x: auto;
 }
 
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
 .rounded {
   border-radius: 0.25rem;
 }
 
 .rounded-3xl {
   border-radius: 1.5rem;
+}
+
+.rounded-full {
+  border-radius: 9999px;
 }
 
 .rounded-lg {
@@ -907,6 +944,11 @@ a:hover {
   background-color: var(--bg-color);
 }
 
+.bg-gray-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
+}
+
 .bg-gray-800 {
   --tw-bg-opacity: 1;
   background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1));
@@ -930,6 +972,15 @@ a:hover {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+}
+
+.object-contain {
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.p-3 {
+  padding: 0.75rem;
 }
 
 .p-4 {
@@ -1364,6 +1415,95 @@ a:hover {
   /* Отступ снизу у каждого блока */
 }
 
+/* Скрытие вертикальной полосы прокрутки */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Отключаем вертикальную прокрутку */
+
+#manufacturers-slider {
+  overflow-y: hidden;
+}
+
+/* Устанавливаем стрелки по бокам */
+
+#scroll-left {
+  left: 0;
+}
+
+#scroll-right {
+  right: 0;
+}
+
+/* Делаем стрелки за пределами слайдера */
+
+#scroll-left, #scroll-right {
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #f0f0f0;
+  padding: 12px;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+/* Минимальное расстояние между элементами */
+
+.manufacturer-logo-container {
+  margin: 0 15px;
+  /* Добавлено пространство между изображениями */
+}
+
+/* Скрытие вертикальной полосы прокрутки */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Стрелки по бокам */
+
+#scroll-left-discount, #scroll-left-new-arrivals,
+#scroll-right-discount, #scroll-right-new-arrivals {
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #f0f0f0;
+  padding: 12px;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+/* Прокрутка только по горизонтали */
+
+#discount-slider, #new-arrivals-slider {
+  overflow-y: hidden;
+}
+
+/* Отступы между карточками товаров */
+
+.product-card {
+  margin-right: 15px;
+  margin-left: 15px;
+}
+
+/* Контейнеры для карточек продуктов */
+
+.product-list-slider {
+  display: flex;
+  overflow-x: auto;
+  gap: 16px;
+}
+
 .hover\:bg-orange-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(234 88 12 / var(--tw-bg-opacity, 1));
@@ -1377,11 +1517,6 @@ a:hover {
 .hover\:text-blue-800:hover {
   --tw-text-opacity: 1;
   color: rgb(30 64 175 / var(--tw-text-opacity, 1));
-}
-
-.hover\:text-gray-900:hover {
-  --tw-text-opacity: 1;
-  color: rgb(17 24 39 / var(--tw-text-opacity, 1));
 }
 
 .hover\:text-pink-800:hover {
@@ -1436,4 +1571,3 @@ a:hover {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
-

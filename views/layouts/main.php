@@ -29,78 +29,109 @@ $this->registerLinkTag(['rel' => 'stylesheet', 'href' => 'https://fonts.googleap
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
     <style>
+        /* Стили для выпадающего меню */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        
         /* Скрытая шапка */
-.header-hidden {
-    transform: translateY(-100%); /* Скрытие шапки при прокрутке */
-    transition: transform 0.3s ease; /* Плавное скрытие */
-}
+        .header-hidden {
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
 
-/* Мобильные стили для меню */
-@media (max-width: 768px) {
-    .menu {
-        display: none;
-        flex-direction: column !important;
-        gap: 15px;
-        background-color: #fff;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        padding: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        z-index: 999;
-        align-items: center;
-    }
+        /* Мобильные стили для меню */
+        @media (max-width: 768px) {
+            .menu {
+                display: none;
+                flex-direction: column !important;
+                gap: 15px;
+                background-color: #fff;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                padding: 20px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                z-index: 999;
+                align-items: center;
+            }
 
-    .menu.active {
-        display: flex !important;
-    }
+            .menu.active {
+                display: flex !important;
+            }
 
-    .burger-icon {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        width: 30px;
-        height: 20px;
-        cursor: pointer;
-    }
+            .burger-icon {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                width: 30px;
+                height: 20px;
+                cursor: pointer;
+            }
 
-    .burger-icon div {
-        height: 4px;
-        background-color: #333;
-        border-radius: 4px;
-    }
+            .burger-icon div {
+                height: 4px;
+                background-color: #333;
+                border-radius: 4px;
+            }
 
-    .menu > .nav-item {
-        width: 100%;
-        text-align: center;
-    }
-}
+            .menu > .nav-item {
+                width: 100%;
+                text-align: center;
+            }
+        }
 
+        /* Для десктопа */
+        @media (min-width: 769px) {
+            .menu {
+                display: flex;
+                flex-direction: row;
+                gap: 20px;
+            }
 
-/* Для десктопа (не показываем бургер меню) */
-@media (min-width: 769px) {
-    .menu {
-        display: flex; /* Для десктопа элементы идут в строку */
-        flex-direction: row; /* Элементы в строку */
-        gap: 20px;
-    }
+            .menu a {
+                font-size: 18px;
+                padding: 10px 15px;
+                color: #333;
+            }
 
-    .menu a {
-        font-size: 18px;
-        padding: 10px 15px;
-        color: #333;
-    }
+            .menu a:hover {
+                color: rgb(196, 113, 19);
+            }
 
-    .menu a:hover {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .burger-icon {
-        display: none; /* Прячем иконку бургера на десктопах */
-    }
-}
+            .burger-icon {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body class="d-flex flex-column h-100">
@@ -108,7 +139,6 @@ $this->registerLinkTag(['rel' => 'stylesheet', 'href' => 'https://fonts.googleap
 
 <header id="header" class="fixed top-0 left-0 w-full bg-white shadow-md z-50">
     <div class="container mx-auto py-4 px-6 flex items-center justify-between">
-        <!-- Левая часть (Лого и Название) -->
         <div class="flex items-center">
             <a href="<?= Yii::$app->homeUrl ?>" class="flex items-center text-xl font-semibold text-gray-800">
                 <img src="" alt="Логотип" class="h-8 mr-2">
@@ -117,46 +147,39 @@ $this->registerLinkTag(['rel' => 'stylesheet', 'href' => 'https://fonts.googleap
         </div>
 
         <!-- Бургер-меню -->
-<div class="burger-icon" id="burger-icon" onclick="toggleMenu()">
-    <div></div>
-    <div></div>
-    <div></div>
-</div>
+        <div class="burger-icon" id="burger-icon" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
 
-<!-- Меню -->
-<div id="menu" class="menu">
-    <?php
-    echo Nav::widget([
-        'options' => ['class' => 'flex space-x-4'],
-        'items' => [
-            ['label' => 'Каталог', 'url' => ['/site/catalog'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']],
-            ['label' => 'О нас', 'url' => ['/site/about'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']],
-            ['label' => 'Контакты', 'url' => ['/site/contact'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Вход', 'url' => ['/site/login'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']]
-            ) : (
-                [
-                    'label' => 'Выход (' . Yii::$app->user->identity->username . ')',
-                    'url' => ['/site/logout'],
-                    'linkOptions' => [
-                        'class' => 'text-gray-700 hover:text-gray-900',
-                        'data' => [
-                            'method' => 'post',
-                        ],
-                    ],
-                ]
-            ),
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Регистрация', 'url' => ['/site/signup'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']]
-            ) : (
-                ['label' => 'Профиль', 'url' => ['/profile/index'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']] 
-            ),
-            ['label' => $this->render('_cart_icon'), 'url' => ['/cart/index'], 'linkOptions' => ['class' => 'text-gray-700 hover:text-gray-900']],
-        ],
-    ]);
-    ?>
-</div>
-</div>
+        <!-- Меню -->
+        <div id="menu" class="menu">
+            <?php
+            echo Nav::widget([
+                'options' => ['class' => 'flex space-x-4'],
+                'items' => [
+                    ['label' => 'Каталог', 'url' => ['/site/catalog'], 'linkOptions' => ['class' => 'text-gray-700']],
+                    ['label' => 'О нас', 'url' => ['/site/about'], 'linkOptions' => ['class' => 'text-gray-700']],
+                    ['label' => 'Контакты', 'url' => ['/site/contact'], 'linkOptions' => ['class' => 'text-gray-700']],
+                    ['label' => 'Корзина', 'url' => ['/cart/index'], 'linkOptions' => ['class' => 'text-gray-700']],
+                    Yii::$app->user->isGuest ? (
+                        ['label' => 'Вход', 'url' => ['/site/login'], 'linkOptions' => ['class' => 'text-gray-700']]
+                    ) : (
+                        [
+                            'label' => 'Выход / Профиль',
+                            'linkOptions' => ['class' => 'text-gray-700 dropdown'],
+                            'items' => [
+                                ['label' => 'Профиль', 'url' => ['/profile/index']],
+                                ['label' => 'Выход', 'url' => ['/site/logout'], 'linkOptions' => ['data' => ['method' => 'post']]],
+                            ],
+                        ]
+                    ),
+                ],
+            ]);
+            ?>
+        </div>
+    </div>
 </header>
 
 <main id="main" class="flex-shrink-0" role="main">
@@ -169,37 +192,26 @@ $this->registerLinkTag(['rel' => 'stylesheet', 'href' => 'https://fonts.googleap
     </div>
 </main>
 
-<footer id="footer" class="bg-gray-800 py-6">
+<footer id="footer" class="bg-gray-800 py-6 mt-auto">
     <div class="container mx-auto px-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Адрес и время работы -->
             <div>
                 <h4 class="font-semibold text-white mb-2">Информация</h4>
                 <p class="text-gray-300">Адрес: ул. Примерная, д. 123</p>
                 <p class="text-gray-300">Время работы: Пн-Пт, 9:00 - 18:00</p>
             </div>
-
-            <!-- Скачать приложение -->
             <div>
                 <h4 class="font-semibold text-white mb-2">Скачать приложение</h4>
                 <div class="flex space-x-2">
-                    <a href="#" target="_blank">
-                        <img src="" alt="App Store" class="h-8">
-                    </a>
-                    <a href="#" target="_blank">
-                        <img src="" alt="Google Play" class="h-8">
-                    </a>
+                    <a href="#"><img src="" alt="App Store" class="h-8"></a>
+                    <a href="#"><img src="" alt="Google Play" class="h-8"></a>
                 </div>
             </div>
-
-            <!-- Телефон связи -->
             <div>
                 <h4 class="font-semibold text-white mb-2">Контакты</h4>
                 <p class="text-gray-300">Телефон: +7 (123) 456-78-90</p>
                 <p class="text-gray-300">Email: info@smartwatchstore.com</p>
             </div>
-
-            <!-- Методы оплаты -->
             <div>
                 <h4 class="font-semibold text-white mb-2">Методы оплаты</h4>
                 <div class="flex space-x-2">
@@ -210,11 +222,9 @@ $this->registerLinkTag(['rel' => 'stylesheet', 'href' => 'https://fonts.googleap
                 </div>
             </div>
         </div>
-
-        <!-- Нижняя часть подвала -->
         <div class="mt-8 pt-4 border-t border-gray-700 text-center text-gray-300">
             <p>&copy; 2025 Компания Умные часы</p>
-            <p>Администрация Сайта не несет ответственности за размещаемые Пользователями материалы (в т.ч. информацию и изображения), их содержание и качество.</p>
+            <p>Администрация сайта не несет ответственности за размещаемые пользователями материалы.</p>
         </div>
     </div>
 </footer>

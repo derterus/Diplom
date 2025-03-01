@@ -24,7 +24,8 @@
         "yiisoft/yii2-bootstrap5": "~2.0.2",
         "yiisoft/yii2-symfonymailer": "~2.0.3",
         "yiisoft/yii2-httpclient": "^2.0",
-        "mobiledetect/mobiledetectlib": "^4.8"
+        "mobiledetect/mobiledetectlib": "^4.8",
+        "fakerphp/faker": "^1.24"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
@@ -73,9 +74,10 @@
         }
     },
     "repositories": {
-        "yii2tech/mobile-detect": {
-            "type": "vcs",
-            "url": "https://github.com/yii2tech/yii2-mobile-detect"
+
+        "packagist": {
+            "type": "composer",
+            "url": "https://repo.packagist.org"
         },
         "0": {
             "type": "composer",
