@@ -14,6 +14,8 @@ use app\models\ProductCharacteristics;
 use yii\web\UnprocessableEntityHttpException;
 use yii\filters\AccessControl;
 use yii\web\ForbiddenHttpException;
+use app\models\Reviews;
+use yii\data\ActiveDataProvider;
 
 class ProductsController extends Controller
 {
@@ -109,31 +111,113 @@ class ProductsController extends Controller
         'bestDeals' => $bestDeals,      // Выгодные предложения
     ]);
 }
+public function actionFilterCatalog()
+{
+    $filters = Yii::$app->request->get('filters', []); // Получаем фильтры
 
-    
+    // Начинаем с базового запроса для товаров
+    $query = Products::find()->with('productImages');
 
-    
-    
-    
-    
-    
+    // Если есть фильтры, добавляем их к запросу
+    if (!empty($filters)) {
+        $query->joinWith('productCharacteristics pc'); // Присоединяем таблицу характеристик
 
+        foreach ($filters as $charId => $values) {
+            // Фильтруем по характеристикам
+            $query->andWhere(['pc.characteristic_id' => $charId])
+                  ->andWhere(['pc.value' => $values]);
+        }
+    }
+
+    // Получаем отфильтрованные товары
+    $products = $query->all();
+
+    // Преобразуем данные товаров
+    $transformProduct = function ($product) {
+        $discountedPrice = $product->price;
+        if ($product->discount_percentage) {
+            $discountedPrice = $product->price * (1 - $product->discount_percentage / 100);
+        }
+
+        return [
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $product->price,
+            'discounted_price' => round($discountedPrice, 2),
+            'description' => $product->description,
+            'discount_percentage' => $product->discount_percentage,
+            'image' => isset($product->productImages[0]) 
+                ? Yii::$app->request->hostInfo . Yii::$app->request->baseUrl . $product->productImages[0]->url
+                : null,
+        ];
+    };
+
+    // Преобразуем все отфильтрованные товары
+    $result = array_map($transformProduct, $products);
+
+    // Возвращаем отфильтрованные товары в формате JSON
+    return $this->asJson([
+        'products' => $result,  // Отфильтрованные товары
+    ]);
+}
     // Method to get one product, including images and characteristics
     public function actionView($id)
     {
         $product = Products::findOne($id);
+
         if (!$product) {
             throw new NotFoundHttpException("Product not found.");
         }
 
-        // Load related images and characteristics
-        $images = ProductImages::find()->where(['product_id' => $id])->all();
-        $characteristics = ProductCharacteristics::find()->where(['product_id' => $id])->all();
+        // Get main image for the product
+        $mainImage = $product->getProductImages()->where(['is_main' => 1])->one();
+
+        // Get characteristics for the product
+        $characteristics = $product->getCharacteristics()->all();
+
+        // Load reviews with pagination (adjust page size as needed)
+        $reviewsProvider = new ActiveDataProvider([
+            'query' => $product->getReviews(),
+            'pagination' => [
+                'pageSize' => 5, // Number of reviews per page
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'created_at' => SORT_DESC, // Sort by creation date, newest first
+                ],
+            ],
+        ]);
+
+        // Find similar products (based on manufacturer)
+        $similarProducts = Products::find()
+            ->where(['manufacturer_id' => $product->manufacturer_id]) // Same manufacturer
+            ->andWhere(['!=', 'id', $id]) // Exclude current product
+            ->limit(4) // Limit to a few similar products
+            ->all();
+
+        // Get main images for similar products
+        $similarProductsWithImages = [];
+        foreach ($similarProducts as $similarProduct) {
+            $similarProductMainImage = $similarProduct->getProductImages()->where(['is_main' => 1])->one();
+            $similarProductsWithImages[] = [
+                'product' => $similarProduct,
+                'mainImage' => $similarProductMainImage,
+            ];
+        }
 
         return [
             'product' => $product,
-            'images' => $images,
-            'characteristics' => $characteristics
+            'mainImage' => $mainImage,
+            'characteristics' => $characteristics,
+            'reviews' => [
+                'items' => $reviewsProvider->getModels(), // Get review models for current page
+                'pagination' => [
+                    'totalCount' => $reviewsProvider->getTotalCount(),
+                    'pageSize' => $reviewsProvider->getPagination()->getPageSize(),
+                    'currentPage' => $reviewsProvider->getPagination()->getPage(),
+                ],
+            ],
+            'similarProducts' => $similarProductsWithImages,
         ];
     }
 

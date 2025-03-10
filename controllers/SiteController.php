@@ -44,6 +44,7 @@ class SiteController extends Controller
         ];
     }
 
+    
     /**
      * {@inheritdoc}
      */
@@ -207,39 +208,49 @@ class SiteController extends Controller
 }
 public function actionCatalog()
 {
-    // Получаем токен из параметров конфигурации
-    $token = Yii::$app->params['apiToken'];
-    // Путь к API для продуктов
-    $productsApiUrl = Yii::$app->request->baseUrl . '/api/products';
-    // Создаем HTTP клиент
+    $token = Yii::$app->params['apiToken']; $token = Yii::$app->params['apiToken'];
     $client = new Client();
 
     try {
-        // Запрос для получения продуктов
-        $productResponse = $client->get(Yii::$app->request->hostInfo . $productsApiUrl, [], [
+        // Собираем параметры фильтров
+        $filters = Yii::$app->request->get('filters', []);
+
+        // Запрос к API продуктов с фильтрами
+        $productResponse = $client->get(Yii::$app->request->hostInfo . Yii::$app->request->baseUrl . '/api/products', [
+            'filters' => json_encode($filters) // Передаем фильтры
+        ], [
             'Authorization' => 'Bearer ' . $token,
         ])->send();
 
-        // Если запрос прошел успешно
-        if ($productResponse->isOk) {
-            // Получаем данные из API
-            $products = $productResponse->data['products']; // Продукты
-            $newArrivals = $productResponse->data['newArrivals']; // Новые поступления
-            $bestDeals = $productResponse->data['bestDeals']; // Лучшие предложения
-        }else {
-            // Если произошла ошибка при запросе
-            throw new HttpException($productResponse->statusCode, 'Ошибка при получении данных с API');
+        if (!$productResponse->isOk) {
+            throw new HttpException($productResponse->statusCode, 'Ошибка при получении продуктов');
         }
+
+        $products = $productResponse->data['products'];
+
+        // Запрос к API характеристик
+        $charResponse = $client->get(Yii::$app->request->hostInfo . Yii::$app->request->baseUrl . '/api/characteristics', [], [
+            'Authorization' => 'Bearer ' . $token,
+        ])->send();
+
+        if (!$charResponse->isOk) {
+            throw new HttpException($charResponse->statusCode, 'Ошибка при получении характеристик');
+        }
+
+        $characteristics = $charResponse->data;
+
+        if (Yii::$app->request->isAjax) {
+            return $this->asJson(['products' => $products]); // Возвращаем JSON для AJAX-запроса
+        }
+
     } catch (\Exception $e) {
-        // Обработка ошибок, если что-то пошло не так
         throw new HttpException(500, 'Ошибка при запросе к API: ' . $e->getMessage());
     }
 
-    // Передаем данные на страницу catalog.php
     return $this->render('catalog', [
         'products' => $products,
-        'newArrivals' => $newArrivals,
-        'bestDeals' => $bestDeals,
+        'characteristics' => $characteristics,
     ]);
 }
+
 }

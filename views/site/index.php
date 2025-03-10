@@ -1,5 +1,4 @@
 <?php
-
 /** @var yii\web\View $this */
 /** @var array $products */
 /** @var array $newArrivals */
@@ -12,202 +11,174 @@ use yii\helpers\Url;
 $this->title = 'Главная страница - Магазин смарт-часов';
 ?>
 
-<div class="site-index">
-
+<div class="site-index font-montserrat bg-[var(--bg-color)] text-[var(--text-color)]">
     <!-- Hero Section -->
-    <section class="bg-bg-color py-20">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-5xl font-bold text-primary-dark mb-8">Технологии будущего на вашем запястье</h1>
-            <p class="text-xl text-text-color mb-12">
-                Откройте для себя мир смарт-часов. Отслеживайте свою активность, получайте уведомления и оставайтесь всегда на связи.
-            </p>
-            <a href="<?= Url::to(['product/index']) ?>" class="btn-primary">Смотреть все модели</a>
+    <section class="py-12">
+        <div class="container mx-auto px-6">
+            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-xl p-8 text-center shadow-md">
+                <h1 class="text-4xl md:text-5xl font-bold text-black mb-6 drop-shadow-lg tracking-tight">Технологии будущего на вашем запястье</h1>
+                <p class="text-lg md:text-xl text-[var(--text-color)] mb-8 max-w-2xl mx-auto leading-relaxed">Откройте для себя мир смарт-часов. Отслеживайте активность, получайте уведомления и оставайтесь на связи.</p>
+                <a href="<?= Url::to(['product/index']) ?>" class="inline-block bg-[var(--primary-color)] hover:bg-[var(--primary-dark)] text-white font-semibold px-6 py-3 rounded-xl transition duration-300 text-md shadow-md">Смотреть все модели</a>
+            </div>
         </div>
     </section>
 
-<!-- Раздел скидок -->
-<div class="promo-discount py-12">
-    <h3 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
-        <i class="fas fa-percent mr-2"></i> Лучшие скидки
-    </h3>
-    <div class="relative">
-        <!-- Кнопка "назад" -->
-        <button id="scroll-left-discount" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-3 rounded-full shadow-md z-10">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-
-        <!-- Контейнер для горизонтальной прокрутки -->
-        <div id="discount-slider" class="flex overflow-x-auto space-x-6 px-6 no-scrollbar">
-            <?php foreach ($bestDeals as $product): ?>
-                <div class="product-card flex-shrink-0 w-60">
-                    <img class="product-image" src="<?= Html::encode($product['image']) ?>" alt="<?= Html::encode($product['name']) ?>" />
-                    <div class="product-info">
-                        <h4 class="product-name"><?= Html::encode($product['name']) ?></h4>
-                        <div class="price-row flex items-center mt-auto">
-                            <?php if ($product['discount_percentage'] > 0): ?>
-                                <p class="discount-price"><?= Html::encode($product['price']) ?> ₽</p>
-                                <p class="current-price text-accent-color"><?= Html::encode($product['price'] * (1 - $product['discount_percentage'] / 100)) ?> ₽</p>
-                            <?php else: ?>
-                                <p class="current-price"><?= Html::encode($product['price']) ?> ₽</p>
-                            <?php endif; ?>
+    <!-- Раздел скидок -->
+    <section class="py-12">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-semibold text-black mb-6 text-center drop-shadow-md">
+                <i class="fas fa-percent mr-2 text-[var(--primary-color)]"></i> Лучшие скидки
+            </h3>
+            <div class="relative bg-[var(--block-bg)] border border-[var(--border-color)] rounded-xl p-6 shadow-md">
+                <button id="scroll-left-discount" class="absolute -left-3 top-1/2 -translate-y-1/2 bg-[var(--block-bg)] p-3 rounded-full shadow-md z-10 opacity-70 hover:opacity-100 transition-opacity">
+                    <i class="fas fa-chevron-left text-[var(--primary-color)]"></i>
+                </button>
+                <div id="discount-slider" class="flex overflow-x-auto space-x-6 no-scrollbar snap-x snap-mandatory">
+                    <?php foreach ($bestDeals as $product): ?>
+                        <div class="product-card snap-start flex-shrink-0">
+                            <img class="w-full h-48 object-contain p-3" src="<?= Html::encode($product['image']) ?>" alt="<?= Html::encode($product['name']) ?>" />
+                            <div class="p-4 flex flex-col flex-grow">
+                                <h4 class="text-lg font-semibold mb-2 break-words text-black"><?= Html::encode($product['name']) ?></h4>
+                                <div class="flex items-center mt-auto">
+                                    <?php if ($product['discount_percentage'] > 0): ?>
+                                        <p class="text-gray-500 line-through mr-2 text-sm"><?= Html::encode($product['price']) ?> ₽</p>
+                                        <p class="font-bold text-md text-[var(--primary-color)]"><?= Html::encode($product['price'] * (1 - $product['discount_percentage'] / 100)) ?> ₽</p>
+                                    <?php else: ?>
+                                        <p class="font-bold text-md text-[var(--text-color)]"><?= Html::encode($product['price']) ?> ₽</p>
+                                    <?php endif; ?>
+                                </div>
+                                <a href="<?= Url::to(['product/view', 'id' => $product['id']]) ?>" class="mt-3 block text-center bg-[var(--primary-color)] hover:bg-[var(--primary-dark)] text-white font-semibold py-2 px-4 rounded-xl transition duration-300 text-sm">Подробнее</a>
+                            </div>
                         </div>
-                    </div>
-                    <a href="<?= Url::to(['product/view', 'id' => $product['id']]) ?>" class="btn-more">Подробнее</a>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
+                <button id="scroll-right-discount" class="absolute -right-3 top-1/2 -translate-y-1/2 bg-[var(--block-bg)] p-3 rounded-full shadow-md z-10 opacity-70 hover:opacity-100 transition-opacity">
+                    <i class="fas fa-chevron-right text-[var(--primary-color)]"></i>
+                </button>
+            </div>
         </div>
+    </section>
 
-        <!-- Кнопка "вперед" -->
-        <button id="scroll-right-discount" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-3 rounded-full shadow-md z-10">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    </div>
-</div>
-
-
-<!-- Раздел новинок -->
-<div class="promo-new-arrivals py-12 bg-orange-50">
-    <h3 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
-        <i class="fas fa-watch mr-2"></i> Новинки
-    </h3>
-    <div class="relative">
-        <!-- Кнопка "назад" -->
-        <button id="scroll-left-new-arrivals" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-3 rounded-full shadow-md z-10">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-
-        <!-- Контейнер для горизонтальной прокрутки -->
-        <div id="new-arrivals-slider" class="flex overflow-x-auto space-x-6 px-6 no-scrollbar">
-            <?php foreach ($newArrivals as $product): ?>
-                <div class="product-card flex-shrink-0 w-60">
-                    <img class="product-image" src="<?= Html::encode($product['image']) ?>" alt="<?= Html::encode($product['name']) ?>" />
-                    <div class="product-info">
-                        <h4 class="product-name"><?= Html::encode($product['name']) ?></h4>
-                        <div class="price-row flex items-center mt-auto">
-                            <?php if ($product['discount_percentage'] > 0): ?>
-                                <p class="discount-price"><?= Html::encode($product['price']) ?> ₽</p>
-                                <p class="current-price text-accent-color"><?= Html::encode($product['price'] * (1 - $product['discount_percentage'] / 100)) ?> ₽</p>
-                            <?php else: ?>
-                                <p class="current-price"><?= Html::encode($product['price']) ?> ₽</p>
-                            <?php endif; ?>
+    <!-- Раздел новинок -->
+    <section class="py-12">
+        <div class="container mx-auto px-6">
+            <h3 class="text-3xl font-semibold text-black mb-6 text-center drop-shadow-md">
+                <i class="fas fa-watch mr-2 text-[var(--primary-color)]"></i> Новинки
+            </h3>
+            <div class="relative bg-[var(--block-bg)] border border-[var(--border-color)] rounded-xl p-6 shadow-md">
+                <button id="scroll-left-new-arrivals" class="absolute -left-3 top-1/2 -translate-y-1/2 bg-[var(--block-bg)] p-3 rounded-full shadow-md z-10 opacity-70 hover:opacity-100 transition-opacity">
+                    <i class="fas fa-chevron-left text-[var(--primary-color)]"></i>
+                </button>
+                <div id="new-arrivals-slider" class="flex overflow-x-auto space-x-6 no-scrollbar snap-x snap-mandatory">
+                    <?php foreach ($newArrivals as $product): ?>
+                        <div class="product-card snap-start flex-shrink-0">
+                            <img class="w-full h-48 object-contain p-3" src="<?= Html::encode($product['image']) ?>" alt="<?= Html::encode($product['name']) ?>" />
+                            <div class="p-4 flex flex-col flex-grow">
+                                <h4 class="text-lg font-semibold mb-2 break-words text-black"><?= Html::encode($product['name']) ?></h4>
+                                <div class="flex items-center mt-auto">
+                                    <?php if ($product['discount_percentage'] > 0): ?>
+                                        <p class="text-gray-500 line-through mr-2 text-sm"><?= Html::encode($product['price']) ?> ₽</p>
+                                        <p class="font-bold text-md text-[var(--primary-color)]"><?= Html::encode($product['price'] * (1 - $product['discount_percentage'] / 100)) ?> ₽</p>
+                                    <?php else: ?>
+                                        <p class="font-bold text-md text-[var(--text-color)]"><?= Html::encode($product['price']) ?> ₽</p>
+                                    <?php endif; ?>
+                                </div>
+                                <a href="<?= Url::to(['product/view', 'id' => $product['id']]) ?>" class="mt-3 block text-center bg-[var(--primary-color)] hover:bg-[var(--primary-dark)] text-white font-semibold py-2 px-4 rounded-xl transition duration-300 text-sm">Подробнее</a>
+                            </div>
                         </div>
-                    </div>
-                    <a href="<?= Url::to(['product/view', 'id' => $product['id']]) ?>" class="btn-more">Подробнее</a>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
+                <button id="scroll-right-new-arrivals" class="absolute -right-3 top-1/2 -translate-y-1/2 bg-[var(--block-bg)] p-3 rounded-full shadow-md z-10 opacity-70 hover:opacity-100 transition-opacity">
+                    <i class="fas fa-chevron-right text-[var(--primary-color)]"></i>
+                </button>
+            </div>
         </div>
+    </section>
 
-        <!-- Кнопка "вперед" -->
-        <button id="scroll-right-new-arrivals" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-3 rounded-full shadow-md z-10">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    </div>
-</div>
-
-
-
-    <div class="manufacturers-section py-12">
-    <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">Наши производители</h2>
-    
-    <div class="relative flex items-center">
-        <!-- Кнопка "назад" -->
-        <button id="scroll-left" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-3 rounded-full shadow-md z-10">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-
-        <!-- Контейнер для горизонтальной прокрутки -->
-        <div id="manufacturers-slider" class="flex overflow-x-auto space-x-6 px-6 scroll-smooth no-scrollbar">
-            <?php foreach ($manufacturers as $manufacturer): ?>
-                <div class="manufacturer-logo-container flex-shrink-0 w-40">
-                    <a href="<?= Url::to(['site/brand', 'id' => $manufacturer['id']]) ?>">
-                        <img class="w-full h-auto object-contain" src="<?= Html::encode($manufacturer['logo']) ?>" alt="<?= Html::encode($manufacturer['name']) ?>" />
-                    </a>
+    <!-- Производители -->
+    <section class="py-12">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-semibold text-black mb-6 text-center drop-shadow-md">Наши производители</h2>
+            <div class="relative  p-6">
+                <button id="scroll-left" class="absolute -left-3 top-1/2 -translate-y-1/2 bg-[var(--block-bg)] p-3 rounded-full shadow-md z-10 opacity-70 hover:opacity-100 transition-opacity">
+                    <i class="fas fa-chevron-left text-[var(--primary-color)]"></i>
+                </button>
+                <div id="manufacturers-slider" class="flex overflow-x-auto space-x-8 no-scrollbar snap-x snap-mandatory">
+                    <?php foreach ($manufacturers as $manufacturer): ?>
+                        <div class="snap-start flex-shrink-0 w-40">
+                            <a href="<?= Url::to(['site/brand', 'id' => $manufacturer['id']]) ?>" class="manufacturer-logo-container block">
+                                <img class="w-full h-40 object-scale-down p-3" src="<?= Html::encode($manufacturer['logo']) ?>" alt="<?= Html::encode($manufacturer['name']) ?>" />
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
-        </div>
-
-        <!-- Кнопка "вперед" -->
-        <button id="scroll-right" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-3 rounded-full shadow-md z-10">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    </div>
-</div>
-
-
-    <!-- Раздел с бонусами или рекомендациями -->
-    <div class="bonus-section py-12 bg-white">
-        <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">Рекомендуем вам</h2>
-        <div class="bonus-items grid grid-cols-1 md:grid-cols-3 gap-8 px-6">
-            <div class="bonus-item p-8 rounded-3xl shadow-md bg-orange-50">
-                <h3 class="text-xl font-semibold text-primary-dark mb-3"><i class="fas fa-shield-alt mr-2"></i> Гарантия качества</h3>
-                <p class="text-text-color">Все наши часы проходят строгий контроль качества, чтобы обеспечить вам долгосрочную эксплуатацию и надежность.</p>
-            </div>
-            <div class="bonus-item p-8 rounded-3xl shadow-md bg-orange-50">
-                <h3 class="text-xl font-semibold text-primary-dark mb-3"><i class="fas fa-shipping-fast mr-2"></i> Бесплатная доставка</h3>
-                <p class="text-text-color">Мы предлагаем бесплатную доставку для всех заказов на сумму от 5000 ₽.</p>
-            </div>
-            <div class="bonus-item p-8 rounded-3xl shadow-md bg-orange-50">
-                <h3 class="text-xl font-semibold text-primary-dark mb-3"><i class="fas fa-headset mr-2"></i> Поддержка 24/7</h3>
-                <p class="text-text-color">Наша служба поддержки готова ответить на ваши вопросы и помочь в любой ситуации.</p>
+                <button id="scroll-right" class="absolute -right-3 top-1/2 -translate-y-1/2 bg-[var(--block-bg)] p-3 rounded-full shadow-md z-10 opacity-70 hover:opacity-100 transition-opacity">
+                    <i class="fas fa-chevron-right text-[var(--primary-color)]"></i>
+                </button>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Рекомендации -->
+    <section class="py-12">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-semibold text-black mb-6 text-center drop-shadow-md">Рекомендуем вам</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 rounded-xl shadow-md bg-[var(--block-bg)] border border-[var(--border-color)] hover:shadow-lg transition-shadow">
+                    <h3 class="text-xl font-semibold text-black mb-3"><i class="fas fa-shield-alt mr-2 text-[var(--primary-color)]"></i> Гарантия качества</h3>
+                    <p class="text-[var(--text-color)] leading-relaxed text-sm">Все наши часы проходят строгий контроль качества для надежности.</p>
+                </div>
+                <div class="p-6 rounded-xl shadow-md bg-[var(--block-bg)] border border-[var(--border-color)] hover:shadow-lg transition-shadow">
+                    <h3 class="text-xl font-semibold text-black mb-3"><i class="fas fa-shipping-fast mr-2 text-[var(--primary-color)]"></i> Бесплатная доставка</h3>
+                    <p class="text-[var(--text-color)] leading-relaxed text-sm">Бесплатная доставка для заказов от 5000 ₽.</p>
+                </div>
+                <div class="p-6 rounded-xl shadow-md bg-[var(--block-bg)] border border-[var(--border-color)] hover:shadow-lg transition-shadow">
+                    <h3 class="text-xl font-semibold text-black mb-3"><i class="fas fa-headset mr-2 text-[var(--primary-color)]"></i> Поддержка 24/7</h3>
+                    <p class="text-[var(--text-color)] leading-relaxed text-sm">Наша поддержка всегда готова помочь вам.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const slider = document.getElementById("manufacturers-slider");
-    const btnLeft = document.getElementById("scroll-left");
-    const btnRight = document.getElementById("scroll-right");
-
-    const scrollAmount = 200; // Количество пикселей для прокрутки
-
-    btnLeft.addEventListener("click", function () {
-        slider.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-    });
-
-    btnRight.addEventListener("click", function () {
-        slider.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    });
-
-    // Предотвращаем прокрутку вверх и вниз
-    slider.addEventListener("wheel", function (e) {
-        if (e.deltaY !== 0) {
-            e.preventDefault();
-            slider.scrollBy({
-                left: e.deltaY > 0 ? scrollAmount : -scrollAmount,
-                behavior: "smooth"
-            });
-        }
-    });
-});
 document.addEventListener("DOMContentLoaded", function () {
     function setupSlider(sliderId, btnLeftId, btnRightId) {
         const slider = document.getElementById(sliderId);
         const btnLeft = document.getElementById(btnLeftId);
         const btnRight = document.getElementById(btnRightId);
-        const scrollAmount = 300; // Увеличил прокрутку для плавности
+        const scrollAmount = 300;
 
         function checkButtons() {
-            btnLeft.style.opacity = slider.scrollLeft > 0 ? "1" : "0.3";
-            btnRight.style.opacity = slider.scrollLeft + slider.clientWidth < slider.scrollWidth ? "1" : "0.3";
+            btnLeft.style.opacity = slider.scrollLeft > 0 ? "1" : "0.7";
+            btnRight.style.opacity = slider.scrollLeft + slider.clientWidth < slider.scrollWidth ? "1" : "0.7";
         }
 
         btnLeft.addEventListener("click", function () {
             slider.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-            setTimeout(checkButtons, 300);
+            setTimeout(checkButtons, 200);
         });
 
         btnRight.addEventListener("click", function () {
             slider.scrollBy({ left: scrollAmount, behavior: "smooth" });
-            setTimeout(checkButtons, 300);
+            setTimeout(checkButtons, 200);
         });
 
-        checkButtons(); // Проверяем начальное состояние кнопок
+        slider.addEventListener("wheel", function (e) {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                slider.scrollBy({
+                    left: e.deltaY > 0 ? scrollAmount : -scrollAmount,
+                    behavior: "smooth"
+                });
+            }
+        });
+
+        checkButtons();
     }
 
     setupSlider("discount-slider", "scroll-left-discount", "scroll-right-discount");
     setupSlider("new-arrivals-slider", "scroll-left-new-arrivals", "scroll-right-new-arrivals");
     setupSlider("manufacturers-slider", "scroll-left", "scroll-right");
 });
-
 </script>

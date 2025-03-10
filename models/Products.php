@@ -109,11 +109,16 @@ class Products extends \yii\db\ActiveRecord
      * Gets query for [[ProductCharacteristics]].
      *
      * @return \yii\db\ActiveQuery
-     */
-    public function getProductCharacteristics()
-    {
-        return $this->hasMany(ProductCharacteristics::class, ['product_id' => 'id']);
-    }
+     */ 
+
+    // Связь с характеристикой
+    public function getCharacteristics()
+{
+    return $this->hasMany(ProductCharacteristics::class, ['product_id' => 'id'])
+        ->with('characteristic'); // Подгружаем сами характеристики
+}
+
+    
 
     /**
      * Gets query for [[ProductImages]].

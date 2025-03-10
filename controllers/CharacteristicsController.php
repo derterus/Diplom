@@ -50,15 +50,21 @@ class CharacteristicsController extends Controller
     }
 
     public function actionIndex()
-    {
-        $characteristics = Characteristics::find()->all();
-        if ($characteristics) {
-            return $characteristics;
-        }
+{
+    $characteristics = Characteristics::find()
+        ->with('values') // Загружаем возможные значения характеристик
+        ->asArray()
+        ->all();
 
-        Yii::info('No characteristics found.', 'test-characteristics');
-        throw new NotFoundHttpException('Characteristics not found.');
+    if ($characteristics) {
+        return $characteristics;
     }
+
+    Yii::info('No characteristics found.', 'test-characteristics');
+    throw new NotFoundHttpException('Characteristics not found.');
+}
+
+
 
     public function actionView($id)
     {

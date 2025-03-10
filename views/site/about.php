@@ -1,5 +1,4 @@
 <?php
-
 /** @var yii\web\View $this */
 
 use yii\helpers\Html;
@@ -8,221 +7,183 @@ use yii\helpers\Url;
 $this->title = 'О нас - Магазин смарт-часов';
 ?>
 
-<div class="site-about">
-    <!-- Hero Section -->
-    <section class="bg-bg-color py-15">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-5xl font-bold text-primary-dark mb-8">О нашей компании</h1>
-            <p class="text-xl text-text-color mb-8">
-                Мы - ваш надежный партнер в мире современных смарт-часов. Узнайте больше о нашей истории, ценностях и команде.
-            </p>
-        </div>
-    </section>
-    <!-- Раздел "Наша история" -->
-    <section class="py-3">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
-                <i class="fas fa-history mr-2"></i> Наша история
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <?php
-                $historyItems = [
-                    ['year' => '2020', 'event' => 'Основание', 'description' => 'Открытие первого магазина, ориентированного на широкий ассортимент и доступные цены.', 'highlight' => 'Основание'],
-                    ['year' => '2021', 'event' => 'Расширение', 'description' => 'Добавление новых брендов и моделей, расширение географии продаж.', 'highlight' => 'Расширение'],
-                    ['year' => '2022', 'event' => 'Онлайн-магазин', 'description' => 'Запуск интернет-магазина для удобства наших клиентов.', 'highlight' => 'Онлайн-магазин'],
-                    ['year' => '2023', 'event' => 'Развитие', 'description' => 'Открытие новых филиалов, расширение ассортимента, улучшение сервиса.', 'highlight' => 'Развитие'],
-                ];
+<div class="site-about font-montserrat bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="mb-6">
+            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-xl p-6 text-center shadow-md">
+                <h1 class="text-4xl md:text-5xl font-bold text-black mb-4 drop-shadow-md">О нашей компании</h1>
+                <p class="text-lg text-[var(--text-color)] max-w-2xl mx-auto leading-relaxed">Ваш надежный партнер в мире смарт-часов. Узнайте о нашей истории, ценностях и команде.</p>
+            </div>
+        </section>
 
-                foreach ($historyItems as $item): ?>
-                    <div class="bg-white rounded-lg shadow-md p-4">
-                        <div class="text-2xl font-bold text-gray-800 mt-0 mb-2" style="position: relative; padding-bottom: 5px;">
-                            <?= $item['year'] ?>
-                            <span style="position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background-color: #ddd;"></span>
-                        </div>
-                        <h4 class="text-base font-medium text-gray-700 mb-2">
-                            <?php if (isset($item['highlight'])): ?>
-                                <span class="font-semibold text-gray-800"><?= $item['event'] ?></span>
-                            <?php else: ?>
-                                <?= $item['event'] ?>
-                            <?php endif; ?>
-                        </h4>
-                        <p class="text-gray-700"><?= $item['description'] ?></p>
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column: History Timeline -->
+            <div class="lg:col-span-1">
+                <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-xl p-6 shadow-md h-full">
+                    <h2 class="text-2xl font-semibold text-black mb-4 text-center drop-shadow-md">
+                        <i class="fas fa-history mr-2 text-[var(--primary-color)]"></i> Наша история
+                    </h2>
+                    <div class="space-y-4 relative before:absolute before:left-1/2 before:-translate-x-1/2 before:top-0 before:bottom-0 before:w-1 before:bg-[var(--primary-color)]">
+                        <?php
+                        $historyItems = [
+                            ['year' => '2020', 'event' => 'Основание', 'description' => 'Открытие первого магазина с доступными ценами.'],
+                            ['year' => '2021', 'event' => 'Расширение', 'description' => 'Новые бренды и регионы продаж.'],
+                            ['year' => '2022', 'event' => 'Онлайн-магазин', 'description' => 'Запуск интернет-магазина для удобства.'],
+                            ['year' => '2023', 'event' => 'Развитие', 'description' => 'Новые филиалы и улучшенный сервис.'],
+                        ];
+                        foreach ($historyItems as $index => $item): ?>
+                            <div class="relative flex items-center justify-center">
+                                <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-3 w-full max-w-xs shadow-md z-10 <?= $index % 2 === 0 ? 'mr-auto' : 'ml-auto' ?>">
+                                    <div class="text-lg font-bold text-[var(--primary-color)] mb-1"><?= Html::encode($item['year']) ?></div>
+                                    <h4 class="text-base font-semibold text-black"><?= Html::encode($item['event']) ?></h4>
+                                    <p class="text-sm text-[var(--text-color)]"><?= Html::encode($item['description']) ?></p>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </section>
-    <!-- Раздел "Наша команда" -->
-    <section class="py-3 ">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
-                <i class="fas fa-users mr-2"></i> Наша команда сегодня
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                <div class="bg-white rounded-lg shadow-md p-4">
-                    <h3 class="font-semibold text-2xl text-gray-800 mb-2">2</h3>
-                    <p class="text-gray-700">Филиала<br/>В двух городах.</p>
-                </div>
-                <div class="bg-white rounded-lg shadow-md p-4">
-                    <h3 class="font-semibold text-2xl text-gray-800 mb-2">15</h3>
-                    <p class="text-gray-700">Сотрудников<br/>В нашей дружной команде.</p>
-                </div>
-                <div class="bg-white rounded-lg shadow-md p-4">
-                    <h3 class="font-semibold text-2xl text-gray-800 mb-2">1000+</h3>
-                    <p class="text-gray-700">Довольных клиентов<br/>Наши клиенты - наша гордость.</p>
                 </div>
             </div>
-        </div>
-    </section>
-    <section class="py-3">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
-            <i class="fas fa-user-circle mr-2"></i> Для клиентов
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <!-- Карточка 1 -->
-            <div class="bg-white rounded-lg shadow-md p-8 border border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">
-                    Широкий ассортимент
-                </h3>
-                <p class="text-gray-700 text-center">
-                    Мы предлагаем широкий выбор смарт-часов от ведущих мировых брендов.
-                </p>
-            </div>
-            <!-- Карточка 2 -->
-            <div class="bg-white rounded-lg shadow-md p-8 border border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">
-                    Выгодные цены
-                </h3>
-                <p class="text-gray-700 text-center">
-                    У нас вы найдете выгодные цены и регулярные акции.
-                </p>
-            </div>
-            <!-- Карточка 3 -->
-            <div class="bg-white rounded-lg shadow-md p-8 border border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">
-                    Быстрая доставка
-                </h3>
-                <p class="text-gray-700 text-center">
-                    Мы осуществляем быструю и удобную доставку.
-                </p>
-            </div>
-            <!-- Карточка 4 -->
-            <div class="bg-white rounded-lg shadow-md p-8 border border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">
-                    Квалифицированная поддержка
-                </h3>
-                <p class="text-gray-700 text-center">
-                    Наши специалисты всегда готовы помочь с выбором и ответить на ваши вопросы.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Раздел "Для сотрудников" -->
-<section class="py-3">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
-            <i class="fas fa-briefcase mr-2"></i> Для сотрудников
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <!-- Карточка 1 -->
-            <div class="bg-white rounded-lg shadow-md p-8 border border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">
-                    Возможности для роста
-                </h3>
-                <p class="text-gray-700 text-center">
-                    Мы предоставляем возможности для профессионального и карьерного роста.
-                </p>
-            </div>
-            <!-- Карточка 2 -->
-            <div class="bg-white rounded-lg shadow-md p-8 border border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">
-                    Дружный коллектив
-                </h3>
-                <p class="text-gray-700 text-center">
-                    Мы ценим командную работу и дружелюбную атмосферу.
-                </p>
-            </div>
-            <!-- Карточка 3 -->
-            <div class="bg-white rounded-lg shadow-md p-8 border border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">
-                    Достойная оплата труда
-                </h3>
-                <p class="text-gray-700 text-center">
-                    Мы предлагаем конкурентоспособную заработную плату.
-                </p>
-            </div>
-            <!-- Карточка 4 -->
-            <div class="bg-white rounded-lg shadow-md p-8 border border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">
-                    Гибкий график работы
-                </h3>
-                <p class="text-gray-700 text-center">
-                    Возможны варианты гибкого графика работы.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Раздел "Для партнеров" -->
-<section class="py-3">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
-            <i class="fas fa-handshake mr-2"></i> Для партнеров
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <!-- Карточка 1 -->
-            <div class="bg-white rounded-lg shadow-md p-8 border border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">
-                    Взаимовыгодное сотрудничество
-                </h3>
-                <p class="text-gray-700 text-center">
-                    Мы предлагаем выгодные условия сотрудничества.
-                </p>
-            </div>
-            <!-- Карточка 2 -->
-            <div class="bg-white rounded-lg shadow-md p-8 border border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">
-                    Надежность
-                </h3>
-                <p class="text-gray-700 text-center">
-                    Мы являемся надежным партнером.
-                </p>
-            </div>
-            <!-- Карточка 3 -->
-            <div class="bg-white rounded-lg shadow-md p-8 border border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">
-                    Поддержка
-                </h3>
-                <p class="text-gray-700 text-center">
-                    Мы оказываем всестороннюю поддержку нашим партнерам.
-                </p>
-            </div>
-            <!-- Карточка 4 -->
-            <div class="bg-white rounded-lg shadow-md p-8 border border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">
-                    Индивидуальный подход
-                </h3>
-                <p class="text-gray-700 text-center">
-                    Мы всегда стремимся найти индивидуальный подход к каждому партнеру.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-    <!-- Раздел "Свяжитесь с нами" -->
-    <section class="py-3 ">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-semibold text-primary-dark mb-6 text-center">
-                <i class="fas fa-envelope mr-2"></i> Свяжитесь с нами
-            </h2>
-            <div class="text-center">
-                <p class="text-gray-700 mb-4">Если у вас есть вопросы или предложения, мы всегда рады вам помочь!</p>
-                <p class="text-gray-700">Email: <a href="mailto:info@smartwatchstore.com" class="text-blue-600 hover:text-blue-800">info@smartwatchstore.com</a></p>
-                <p class="text-gray-700">Телефон: +7 (XXX) XXX-XX-XX</p>
-            </div>
-        </div>
-    </section>
 
+            <!-- Right Column: Team + Tabs -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Team Stats -->
+                <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-xl p-6 shadow-md">
+                    <h2 class="text-2xl font-semibold text-black mb-4 text-center drop-shadow-md">
+                        <i class="fas fa-users mr-2 text-[var(--primary-color)]"></i> Наша команда
+                    </h2>
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <h3 class="font-semibold text-xl text-[var(--primary-color)] mb-2">2</h3>
+                            <p class="text-base text-[var(--text-color)]">Филиала</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-xl text-[var(--primary-color)] mb-2">15</h3>
+                            <p class="text-base text-[var(--text-color)]">Сотрудников</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-xl text-[var(--primary-color)] mb-2">1000+</h3>
+                            <p class="text-base text-[var(--text-color)]">Клиентов</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs: Clients, Employees, Partners -->
+                <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-xl p-6 shadow-md">
+                    <div class="grid grid-cols-3 gap-2 mb-6">
+                        <button class="tab-btn text-lg font-semibold text-black bg-gray-100 hover:bg-[var(--primary-color)] hover:text-white focus:outline-none transition-colors py-2 rounded-md active" data-tab="clients">Для клиентов</button>
+                        <button class="tab-btn text-lg font-semibold text-black bg-gray-100 hover:bg-[var(--primary-color)] hover:text-white focus:outline-none transition-colors py-2 rounded-md" data-tab="employees">Для сотрудников</button>
+                        <button class="tab-btn text-lg font-semibold text-black bg-gray-100 hover:bg-[var(--primary-color)] hover:text-white focus:outline-none transition-colors py-2 rounded-md" data-tab="partners">Для партнеров</button>
+                    </div>
+                    <div id="tab-content">
+                        <!-- Для клиентов -->
+                        <div id="clients" class="tab-pane grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Широкий ассортимент</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Смарт-часы от ведущих брендов мира.</p>
+                            </div>
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Выгодные цены</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Конкурентные цены и регулярные акции.</p>
+                            </div>
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Быстрая доставка</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Оперативная доставка по всей стране.</p>
+                            </div>
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Поддержка 24/7</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Помощь в выборе и ответы на вопросы.</p>
+                            </div>
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Гарантия качества</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Только сертифицированные товары.</p>
+                            </div>
+                        </div>
+                        <!-- Для сотрудников -->
+                        <div id="employees" class="tab-pane grid grid-cols-1 md:grid-cols-3 gap-4 hidden">
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Возможности роста</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Карьерный и профессиональный рост.</p>
+                            </div>
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Дружный коллектив</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Командная работа и поддержка.</p>
+                            </div>
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Достойная зарплата</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Конкурентная оплата труда.</p>
+                            </div>
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Гибкий график</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Удобные варианты работы.</p>
+                            </div>
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Обучение</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Курсы и тренинги для развития.</p>
+                            </div>
+                        </div>
+                        <!-- Для партнеров -->
+                        <div id="partners" class="tab-pane grid grid-cols-1 md:grid-cols-3 gap-4 hidden">
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Сотрудничество</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Выгодные условия для бизнеса.</p>
+                            </div>
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Надежность</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Стабильное партнерство.</p>
+                            </div>
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Поддержка</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Всесторонняя помощь партнерам.</p>
+                            </div>
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Индивидуальность</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Персональный подход к каждому.</p>
+                            </div>
+                            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
+                                <h3 class="text-lg font-semibold text-black text-center mb-2">Ресурсы</h3>
+                                <p class="text-base text-[var(--text-color)] text-center">Доступ к широкой сети продаж.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <section class="mt-6">
+            <div class="bg-[var(--block-bg)] border border-[var(--border-color)] rounded-xl p-6 text-center shadow-md">
+                <h2 class="text-2xl font-semibold text-black mb-4 drop-shadow-md">
+                    <i class="fas fa-envelope mr-2 text-[var(--primary-color)]"></i> Свяжитесь с нами
+                </h2>
+                <p class="text-base text-[var(--text-color)] mb-4">Есть вопросы или предложения? Мы всегда на связи!</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <p class="text-base text-[var(--text-color)]">Email: <a href="mailto:info@smartwatchstore.com" class="text-[var(--primary-color)] hover:text-[var(--primary-dark)] transition-colors">info@smartwatchstore.com</a></p>
+                    <p class="text-base text-[var(--text-color)]">Телефон: <span class="font-semibold">+7 (123) 456-78-90</span></p>
+                </div>
+                <a href="mailto:info@smartwatchstore.com" class="inline-block bg-[var(--primary-color)] hover:bg-[var(--primary-dark)] text-white font-semibold px-6 py-3 rounded-xl transition duration-300 text-base shadow-md hover:shadow-lg">Написать нам</a>
+            </div>
+        </section>
+    </div>
 </div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active');
+            b.classList.remove('bg-[var(--primary-color)]');
+            b.classList.remove('text-white');
+            b.classList.add('bg-gray-100');
+        });
+        btn.classList.add('active');
+        btn.classList.add('bg-[var(--primary-color)]');
+        btn.classList.add('text-white');
+        btn.classList.remove('bg-gray-100');
+
+        document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
+        document.getElementById(btn.dataset.tab).classList.remove('hidden');
+    });
+});
+</script>

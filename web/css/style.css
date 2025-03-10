@@ -4,12 +4,14 @@
 
 @layer base {
     :root {
-        --primary-color: #f97316; /* Orange-500 */
-        --primary-dark: #ea580c; /* Orange-600 */
-        --accent-color: #2563eb; /* Blue-500 */
-        --text-color: #4a5568; /* Gray-600 */
-        --bg-color: #fff7ed; /* Orange-50 */
-        --card-bg: #ffffff; /* White */
+        --primary-color: #f97316; /* Orange-500 - оранжевый для кнопок и акцентов */
+        --primary-dark: #ea580c; /* Orange-600 - темнее для hover */
+        --text-color: #1f2937; /* Gray-800 - темный текст */
+        --bg-color: #e5e7eb; /* Gray-200 - серый фон сайта */
+        --block-bg: #ffffff; /* White - белый для основных блоков */
+        --alt-bg: #f9fafb; /* Gray-50 - светло-серый для разнообразия */
+        --card-bg: #ffffff; /* White - белый для карточек */
+        --border-color: #d1d5db; /* Gray-300 - окантовка */
         --font-main: 'Montserrat', sans-serif;
         --font-secondary: 'Open Sans', sans-serif;
     }
@@ -23,7 +25,7 @@
     h1, h2, h3, h4, h5, h6 {
         font-family: var(--font-main);
         font-weight: 700;
-        color: #000; /*  Черный цвет для всех заголовков */
+        color: #000;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
@@ -37,82 +39,55 @@
     }
 
     .btn-primary {
-        @apply bg-primary-color hover:bg-primary-dark text-white font-semibold py-2 px-4 rounded-xl transition duration-300;
+        @apply bg-[var(--primary-color)] hover:bg-[var(--primary-dark)] text-white font-semibold py-2 px-4 rounded-xl transition duration-300;
     }
 }
 
 /* Custom Components */
 .product-card {
-    @apply bg-card-bg rounded-2xl shadow-md overflow-hidden flex flex-col h-full transition-transform transform hover:scale-105;
-    min-height: 450px; /*  Минимальная высота для размещения длинных названий */
-    width: 300px;  /*  Фиксированная ширина */
-    flex: 0 0 auto; /* Не сжимать и не растягивать */
-    margin-right: 1.5rem; /*  Отступ между карточками */
+    @apply bg-[var(--card-bg)] rounded-xl shadow-md border border-[var(--border-color)] overflow-hidden flex flex-col h-full transition-transform transform hover:scale-105;
+    min-height: 400px; /* Уменьшил высоту для компактности */
+    width: 280px; /* Уменьшил ширину */
+    flex: 0 0 auto;
+    margin-right: 1rem; /* Уменьшил отступ */
 }
 
 .product-image {
-    @apply w-full object-contain; /*  Используем object-contain */
-    height: 200px;  /*  Фиксированная высота изображения */
+    @apply w-full object-contain;
+    height: 180px; /* Уменьшил высоту изображения */
 }
 
 .product-info {
-    @apply p-6 flex flex-col flex-grow;
+    @apply p-4 flex flex-col flex-grow; /* Уменьшил внутренние отступы */
 }
 
 .product-name {
-    @apply text-xl font-semibold mb-3 overflow-hidden;
-    overflow-wrap: break-word; /* Разрешаем перенос слов */
-    hyphens: auto; /* Включаем автоматические переносы */
+    @apply text-lg font-semibold mb-2 overflow-hidden; /* Уменьшил размер текста */
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .current-price {
-    @apply font-bold text-lg text-text-color;
+    @apply font-bold text-base text-[var(--text-color)]; /* Исправил text-md на text-base */
 }
 
 .discount-price {
-    @apply text-gray-500 line-through mr-3;
+    @apply text-gray-500 line-through mr-2 text-sm;
 }
 
 .btn-more {
-    @apply btn-primary mt-4 block text-center;
+    @apply btn-primary mt-3 block text-center py-2 px-4 text-sm; /* Компактнее кнопка */
 }
 
-/* Product List Slider */
-.product-list-slider {
-    display: flex;
-    overflow-x: auto;
-    overflow-y: hidden; /* Убираем вертикальную прокрутку */
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-    padding: 0.5rem 0; /* Добавим немного отступов для лучшего вида */
-}
-
-/* Исправление проблемы с пропадающим текстом */
-.btn-primary:hover {
-    color: white; /* Явно указываем белый цвет текста при наведении */
-}
 /* Секция с логотипами производителей */
-.manufacturers-section {
-    /* Добавим, если нужно, отступы между секциями */
-    /* margin-bottom: 2rem; */
-}
-
-.manufacturers-logos {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-    padding: 0 1rem; /*  Добавим отступы по бокам */
-}
-
 .manufacturer-logo-container {
-    /*  Убрали стили, которые влияют на размер */
+    @apply bg-[var(--card-bg)] border border-[var(--border-color)];
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(248, 248, 248, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
 
@@ -121,33 +96,13 @@
 }
 
 .manufacturer-logo-container img {
-    width: 200px;           /* Фиксированная ширина */
-    height: 200px;          /* Фиксированная высота */
-    object-fit: scale-down; /*  Уменьшаем, если больше, не увеличиваем */
-    border-radius: 50%;       /* Круглые лого */
+    width: 160px; /* Уменьшил размер логотипов */
+    height: 160px;
+    object-fit: scale-down;
+    border-radius: 50%;
 }
 
-
-.site-about section {
-    margin-bottom: 2rem; /* Добавляем отступы между секциями */
-}
-
-.site-about .container {
-    margin-top: 2rem;
-    margin-bottom: 2rem; /* Контейнеры с отступами */
-}
-
-/* Пример кастомного стиля для секции */
-.section-padding {
-    padding: 2rem 0;
-}
-
-/* Для карточек в сетке */
-.grid-item {
-    margin-top: 1rem;  /* Отступ сверху у каждого блока */
-    margin-bottom: 1rem;  /* Отступ снизу у каждого блока */
-}
-/* Скрытие вертикальной полосы прокрутки */
+/* Скрытие полосы прокрутки */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
@@ -158,70 +113,23 @@
 }
 
 /* Отключаем вертикальную прокрутку */
-#manufacturers-slider {
+#discount-slider, #new-arrivals-slider, #manufacturers-slider {
     overflow-y: hidden;
-}
-
-/* Устанавливаем стрелки по бокам */
-#scroll-left {
-    left: 0;
-}
-
-#scroll-right {
-    right: 0;
-}
-
-/* Делаем стрелки за пределами слайдера */
-#scroll-left, #scroll-right {
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #f0f0f0;
-    padding: 12px;
-    border-radius: 50%;
-    z-index: 10;
-}
-
-/* Минимальное расстояние между элементами */
-.manufacturer-logo-container {
-    margin: 0 15px; /* Добавлено пространство между изображениями */
-}
-
-
-/* Скрытие вертикальной полосы прокрутки */
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-
-.no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
 }
 
 /* Стрелки по бокам */
-#scroll-left-discount, #scroll-left-new-arrivals,
-#scroll-right-discount, #scroll-right-new-arrivals {
+#scroll-left-discount, #scroll-left-new-arrivals, #scroll-right-discount, #scroll-right-new-arrivals, #scroll-left, #scroll-right {
     top: 50%;
     transform: translateY(-50%);
-    background-color: #f0f0f0;
-    padding: 12px;
+    background-color: var(--block-bg);
+    padding: 10px; /* Уменьшил размер стрелок */
     border-radius: 50%;
+    border: 1px solid var(--border-color);
     z-index: 10;
 }
 
-/* Прокрутка только по горизонтали */
-#discount-slider, #new-arrivals-slider {
-    overflow-y: hidden;
-}
-
-/* Отступы между карточками товаров */
+/* Отступы между карточками */
 .product-card {
-    margin-right: 15px;
-    margin-left: 15px;
-}
-
-/* Контейнеры для карточек продуктов */
-.product-list-slider {
-    display: flex;
-    overflow-x: auto;
-    gap: 16px;
+    margin-right: 10px;
+    margin-left: 10px;
 }

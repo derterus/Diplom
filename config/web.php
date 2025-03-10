@@ -132,6 +132,7 @@ $config = [
                 'POST api/manufacturers/<id:\d+>'  => 'manufacturers/update',
                 'POST api/products/<id:\d+>'  => 'products/update',
                 'POST api/orders/<id:\d+>/cancel' => 'orders/cancel',
+                'GET api/products/view/<id:\d+>' => 'products/view',
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'characteristics', 'prefix' => 'api'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'categories', 'prefix' => 'api'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'manufacturers', 'prefix' => 'api'],
@@ -141,7 +142,7 @@ $config = [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'users', 'prefix' => 'api'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'orders', 'prefix' => 'api'],
         
-
+        'GET filter' => 'filter/filter',
         'POST registration/register' => 'registration/register',
         'POST auth/login' => 'auth/login',
 

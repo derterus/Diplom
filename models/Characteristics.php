@@ -56,4 +56,8 @@ class Characteristics extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ProductCharacteristics::class, ['characteristic_id' => 'id']);
     }
+    public function getValues()
+    {
+        return $this->hasMany(CharacteristicValues::class, ['characteristic_id' => 'id']);
+    }
 }
